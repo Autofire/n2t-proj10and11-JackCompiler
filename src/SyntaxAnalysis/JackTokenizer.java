@@ -17,17 +17,155 @@ public class JackTokenizer {
     private BufferedReader reader;
     private List<String> currentLine;
     private boolean unclosedBlockComment = false;
+    private Token nextToken;
 
     public JackTokenizer(BufferedReader in) {
         this.reader = in;
     }
 
+    @Deprecated
     public boolean ready() throws IOException {
         // TODO We need a hasMoreTokens function instead...
         return reader.ready();
     }
 
+    /**
+     * Checks if there are more tokens. This may cause a read
+     * from the file to occur.
+     * @return True if there is at least unhandled 1 token.
+     * @throws IOException if a read error occurs
+     */
+    public boolean hasMoreTokens() throws IOException {
+        if(nextToken == null) {
+            nextToken = readNextToken();
+        }
+
+        return nextToken != null;
+    }
+
+    /**
+     * Reads the next token. This "discards" it from the file,
+     * so the next read will result in a new token.
+     * @return The token, or null if hasMoreTokens is false.
+     * @throws IOException if a read error occurs
+     */
     public Token nextToken() throws IOException {
+        Token currentToken = null;
+
+        if(hasMoreTokens()) {
+            currentToken = nextToken;
+            nextToken = readNextToken();
+        }
+
+        return currentToken;
+    }
+
+    /**
+     * Attempts to grab the next token. If there are no tokens left,
+     * then null is returned.
+     * @return The next token or null.
+     * @throws IOException if a read error occurs
+     */
+    private Token readNextToken() throws IOException {
+
+        Token result = null;
+
+        // Only get another line if we've either parsed this one
+        // or we don't have any line at all yet.
+        if(currentLine == null || currentLine.size() == 0) {
+            getNextLine();
+        }
+
+        if(currentLine != null) {
+
+            // Ok, here's where we actually pull the token out of the line.
+            // Most tokens will have been correctly broken into their own
+            // elements of the array. There's some exceptions however:
+            //  1. Some array elements are empty strings.
+            //  2. String literals are also broken up.
+            //
+            // The first case can be solved just by ignoring empty strings.
+            // Note that these never occur at the end of the line, so we can
+            // safely loop through the line until we find something interesting.
+            //
+            // The second needs some special handling. Fortunately, double quotes
+            // also get split into their own array elements. Thus, we can stitch
+            // elements together until we find another double quote. AFAIK, a string
+            // literal cannot span multiple lines. However, some level of checking
+            // should occur so we know when it occurs.
+
+            // So, as I just said, we need to strip out any empty strings.
+            while(currentLine.get(0).isEmpty()) {
+                currentLine.remove(0);
+            }
+
+            // Now we can actually start to figure out what the token is
+            // that we're looking at. According to the Jack specs, these are
+            // the possibilities (and the order we'll check for them):
+            //  1. Symbols
+            //  2. Keywords
+            //  3. Integer literals
+            //  4. String literals
+            //  5. Identifiers
+            //
+            // The first three are trivial. The 4th, as previously mentioned,
+            // is easy to spot but a little harder to stitch together.
+            // We save Identifiers for last because we could mix things up
+            // otherwise. That being said, we still make sure it's a valid
+            // identifier. If it is not, then we know there's a syntax error
+            // so we'll give up immediately.
+
+            String tStr = currentLine.get(0);
+            currentLine.remove(0);
+
+            if(SymbolToken.isValid(tStr)) {
+                result = new SymbolToken(tStr);
+            }
+            else if(KeywordToken.isValid(tStr)) {
+                result = new KeywordToken(tStr);
+            }
+            else if(IntLiteralToken.isValid(tStr)) {
+                result = new IntLiteralToken(tStr);
+            }
+            else if(tStr.equals("\"")) {
+                // Ok, so it *looks* like a string literal.
+                StringBuilder rawStr = new StringBuilder();
+                rawStr.append(tStr);
+
+                do {
+                    tStr = currentLine.get(0);
+                    currentLine.remove(0);
+                    rawStr.append(tStr);
+                } while(!tStr.equals("\""));
+
+                String strLiteral = rawStr.toString();
+                if(StringLiteralToken.isValid(strLiteral)) {
+                    result = new StringLiteralToken(strLiteral);
+                }
+                else {
+                    throw new RuntimeException("Malformed string literal");
+                }
+
+            }
+            else if(IdentifierToken.isValid(tStr)) {
+                result = new IdentifierToken(tStr);
+            }
+            else {
+                throw new RuntimeException("Malformed input");
+            }
+
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets the next line, breaks it up according to spaces, and
+     * stores it in currentLine.
+     * @throws IOException if a read error occurs
+     */
+    private void getNextLine() throws IOException {
+
         // When reading, we can have these possibilities:
         //  1. The line has no usable code (it's empty or has comments)
         //  2. The line has just usable code
@@ -44,42 +182,11 @@ public class JackTokenizer {
         // but not until we're done with the current line. Then we can
         // resume as normal.
 
-        Token result = null;
-
-        /*
-        if(ready()) {
-            // Ok, so there's more to the file AND we aren't done.
-            StringBuilder currentToken = new StringBuilder();
-
-        }
-         */
-
-        getNextLine();
-
-        if(currentLine != null) {
-            for (String word : currentLine) {
-                System.out.print(word + "_");
-            }
-            System.out.println();
-        }
-        else {
-            System.out.println("// Null line");
-        }
-
-        return result;
-    }
-
-    /**
-     * Gets the next line, breaks it up according to spaces, and
-     * stores it in currentLine.
-     * @throws IOException
-     */
-    private void getNextLine() throws IOException {
-
+        // We need to invalidate the array.
         currentLine = null;
 
         // We will keep going until we get a non-empty line.
-        while(currentLine == null && ready()) {
+        while(currentLine == null && reader.ready()) {
             String line = reader.readLine();
 
             // First, we'll check if we're in a block. If we are,
@@ -125,17 +232,25 @@ public class JackTokenizer {
                 if(!line.isEmpty()) {
                     String regex =
                             String.format(
-                                    "\\s+|((?<=%1$s)|(?=%1$s))",
+                                    "\\s+(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)|" +  // Match spaces outside of quotes
+                                    "((?<=%1$s)|(?=%1$s))",                    // Match symbols but split around them
                                     "[\\Q" + "{}()[].,;+-*/&|<>=~\"" + "\\E]"
                             );
 
-                    currentLine = new Vector<String>(
-                            Arrays.asList( line.split( regex ) )
+                    currentLine = new Vector<>(
+                            Arrays.asList(line.split(regex))
                     );
+
+                    // TODO This is debugging
+                    for (String word : currentLine) {
+                        System.out.print(word + "_");
+                    }
+                    System.out.println();
                 }
 
             }
         }
+
 
     }
 

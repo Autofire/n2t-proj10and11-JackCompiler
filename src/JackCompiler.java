@@ -44,9 +44,10 @@ public class JackCompiler {
         try(BufferedReader reader = new BufferedReader(new FileReader(targetFileName))) {
             JackTokenizer tokenizer = new JackTokenizer(reader);
 
-            while(tokenizer.ready()) {
-                tokenizer.nextToken();
+            while(tokenizer.hasMoreTokens()) {
+                System.out.println(tokenizer.nextToken().toXML());
             }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

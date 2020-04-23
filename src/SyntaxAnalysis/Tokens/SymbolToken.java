@@ -6,12 +6,15 @@ public class SymbolToken implements Token {
     public static boolean isValid(char value) {
         return ALL_SYMBOLS.contains(Character.toString(value));
     }
+    public static boolean isValid(String value) {
+        return value.length() == 1 && isValid(value.charAt(0));
+    }
 
     private char symbol;
 
-    public SymbolToken(char value) {
+    public SymbolToken(String value) {
         if(isValid(value)) {
-            symbol = value;
+            symbol = value.charAt(0);
         }
         else {
             throw new IllegalArgumentException();
