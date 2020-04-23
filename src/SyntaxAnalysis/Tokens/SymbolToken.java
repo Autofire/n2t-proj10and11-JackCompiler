@@ -2,9 +2,9 @@ package SyntaxAnalysis.Tokens;
 
 public class SymbolToken implements Token {
 
-    private static final String allSymbols = "{}()[].,;+-*/&|<>=~";
+    public static final String ALL_SYMBOLS = "{}()[].,;+-*/&|<>=~";
     public static boolean isValid(char value) {
-        return allSymbols.contains(value + "");
+        return ALL_SYMBOLS.contains(Character.toString(value));
     }
 
     private char symbol;

@@ -4,6 +4,9 @@ import SyntaxAnalysis.Tokens.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Serves as a wrapper for a .jack file. This converts the input stream
@@ -11,147 +14,130 @@ import java.io.IOException;
  * actually *mean*, it just breaks them up.
  */
 public class JackTokenizer {
-    private BufferedReader in;
-
-    /**
-     * Don't reference directly; call getCurrentLine. Yes, that's
-     * private too, but we want to always make sure this has the next
-     * batch of data.
-     */
-    private StringBuilder currentLine;
+    private BufferedReader reader;
+    private List<String> currentLine;
+    private boolean unclosedBlockComment = false;
 
     public JackTokenizer(BufferedReader in) {
-        this.in = in;
+        this.reader = in;
     }
 
-    public boolean hasMoreTokens() throws IOException {
-        return in.ready();
+    public boolean ready() throws IOException {
+        // TODO We need a hasMoreTokens function instead...
+        return reader.ready();
     }
 
     public Token nextToken() throws IOException {
+        // When reading, we can have these possibilities:
+        //  1. The line has no usable code (it's empty or has comments)
+        //  2. The line has just usable code
+        //  3. The line has some of each
+        //
+        // In the case of double slash, it's easy; just strip everything that
+        // follows. However, with /* */, it's a little harder. If we have a
+        // line of code has an unclosed /*, we would then want to keep going
+        // through lines until we find a matching */. Note that more code
+        // may follow after the */!
+        //
+        // HOWEVER, this gets harder if we have both code and an unclosed
+        // /* in the line. Then we need to remember that we're looking for */
+        // but not until we're done with the current line. Then we can
+        // resume as normal.
+
         Token result = null;
 
-        // First, we must seek until we find some non-whitespace characters
-        // as well as all comments.
-        pruneNonTokens();
-
-        if(hasMoreTokens()) {
+        /*
+        if(ready()) {
             // Ok, so there's more to the file AND we aren't done.
             StringBuilder currentToken = new StringBuilder();
 
+        }
+         */
+
+        getNextLine();
+
+        if(currentLine != null) {
+            for (String word : currentLine) {
+                System.out.print(word + "_");
+            }
+            System.out.println();
+        }
+        else {
+            System.out.println("// Null line");
         }
 
         return result;
     }
 
     /**
-     * This fast-forwards through the file until we see something that is NOT
-     * a token.
+     * Gets the next line, breaks it up according to spaces, and
+     * stores it in currentLine.
+     * @throws IOException
      */
-    private void pruneNonTokens() throws IOException {
-        Character c = peekNextChar();
-        boolean donePruning = false;
-        while(c != null && !donePruning) {
+    private void getNextLine() throws IOException {
 
-            if(c.toString().isBlank()) {
-                removeNextChar();
-            }
-            else if(c == '/') {
-                // We might be looking at a comment, either just for the
-                // line or for an entire block.
-                if(getCurrentLine().toString().startsWith("//")) {
-                    discardLine();
-                }
-                else if(getCurrentLine().toString().startsWith("/*")) {
-                    // Ok, we just saw a block comment. This means we'll need
-                    // to delete up until the closing block symbol. Thus,
-                    // we'll have another internal loop that seeks until
-                    // we spot it.
-
-                    // Remove the "/*"
-                    removeNextChar();
-                    removeNextChar();
-
-                    while(currentLine != null && !currentLine.toString().contains("*/")) {
-                        discardLine();
-                        getCurrentLine();
-                    }
-
-                    if(currentLine != null) {
-                        // Strip out everything that comes before the "*/"
-                        currentLine = new StringBuilder(
-                                currentLine.toString().replaceFirst("^.*?\\*/", "")
-                        );
-                    }
-                }
-            }
-            else {
-                // We've found something which looks like it can be a token.
-                donePruning = true;
-            }
-
-            c = peekNextChar();
-        }
-
-
-    }
-
-    /**
-     * This attempts to grab the next character in the file. Note that this can
-     * be called without actually changing where we are in the file.
-     * @return The next character, if there is one. Returns null otherwise.
-     */
-    private Character peekNextChar() {
-        StringBuilder l = getCurrentLine();
-
-        if(l != null && l.length() > 0) {
-            return l.charAt(0);
-        }
-        else {
-            return null;
-        }
-    }
-
-    /**
-     * Removes the current character we're looking at.
-     * @return True if removed, false otherwise.
-     */
-    private boolean removeNextChar() {
-        StringBuilder l = getCurrentLine();
-
-        if(l != null && l.length() > 0) {
-            l.deleteCharAt(0);
-            return true;
-        }
-        else {
-            return false;
-        }
-
-    }
-
-    /**
-     * Attempts to grab the current line. This will keep grabbing more lines
-     * until it finds one which is not empty. If there's any issue reading the
-     * file, null is returned instead.
-     * @return
-     */
-    private StringBuilder getCurrentLine() {
-        try {
-            while ((currentLine == null || currentLine.length() == 0) && hasMoreTokens()) {
-                currentLine = new StringBuilder(in.readLine());
-            }
-        }
-        catch(IOException e) {
-            currentLine = null;
-        }
-
-        return currentLine;
-    }
-
-    /**
-     * Call this if we decide that we don't need anything else on the current line
-     */
-    private void discardLine() {
         currentLine = null;
+
+        // We will keep going until we get a non-empty line.
+        while(currentLine == null && ready()) {
+            String line = reader.readLine();
+
+            // First, we'll check if we're in a block. If we are,
+            // we gotta delete until the next */. If that DOESN'T
+            // exist, then we gotta just delete it all.
+            if (unclosedBlockComment) {
+                int oldLength = line.length();
+                line = line.replaceFirst("^.*?\\*/", "");
+
+                // If no deletion occurred, we want to wipe out the
+                // entire line.
+                if(line.length() == oldLength) {
+                    line = "";
+                }
+                else {
+                    unclosedBlockComment = false;
+                }
+            }
+
+            // At this point, the line might just be empty...
+
+            if(!line.isEmpty()) {
+                // First, we'll nuke all contained instances of /* ... */
+                line = line.replaceAll("/\\*.*?\\*/", "");
+
+                // Now we'll nuke the first instance of /* ...
+                // Note that if we DO make a deletion, it means we have an
+                // unclosed comment block! Hence, we'll track the length.
+                // If the length changes, then we know there's an unclosed
+                // block comment.
+                int oldLength = line.length();
+                line = line.replaceFirst("/\\*.*$", "");
+                unclosedBlockComment = (line.length() != oldLength);
+
+                // We'll delete the first instance of // ...
+                line = line.replaceFirst("//.*$", "");
+
+                // Ok, FINALLY... we can drop any whitespace.
+                line = line.strip();
+
+                // If, after all of that, there's more to the line, we should
+                // be able to extract some meaningful code from it.
+                if(!line.isEmpty()) {
+                    String regex =
+                            String.format(
+                                    "\\s+|((?<=[%1$s])|(?=[%1$s]))",
+                                    "\\Q" + "{}()[].,;+-*/&|<>=~\"" + "\\E"
+                            );
+
+                    currentLine = new Vector<String>(
+                            Arrays.asList( line.split( regex ) )
+                    );
+                }
+
+            }
+        }
+
     }
+
+
 }
