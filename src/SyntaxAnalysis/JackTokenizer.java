@@ -230,11 +230,14 @@ public class JackTokenizer {
                 // If, after all of that, there's more to the line, we should
                 // be able to extract some meaningful code from it.
                 if(!line.isEmpty()) {
+
+                    // See https://stackoverflow.com/a/11503678
+                    // See https://stackoverflow.com/a/2206432
                     String regex =
                             String.format(
-                                    "\\s+(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)|" +  // Match spaces outside of quotes
+                                    "\\s+(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)|" +  // Match spaces outside of quotes, or...
                                     "((?<=%1$s)|(?=%1$s))",                    // Match symbols but split around them
-                                    "[\\Q" + "{}()[].,;+-*/&|<>=~\"" + "\\E]"
+                                    "[\\Q" + "{}()[].,;+-*/&|<>=~\"" + "\\E]"  // The list of symbols to detect
                             );
 
                     currentLine = new Vector<>(
