@@ -233,22 +233,22 @@ public class JackTokenizer {
 
                     // See https://stackoverflow.com/a/11503678
                     // See https://stackoverflow.com/a/2206432
-                    String regex =
-                            String.format(
-                                    "\\s+(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)|" +  // Match spaces outside of quotes, or...
-                                    "((?<=%1$s)|(?=%1$s))",                    // Match symbols but split around them
-                                    "[\\Q" + "{}()[].,;+-*/&|<>=~\"" + "\\E]"  // The list of symbols to detect
-                            );
+                    String regex = String.format(
+                        "\\s+(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)|" +  // Match spaces outside of quotes, or...
+                        "((?<=%1$s)|(?=%1$s))",                    // Match symbols but split around them
+                        "[\\Q" + "{}()[].,;+-*/&|<>=~\"" + "\\E]"  // The list of symbols to detect
+                    );
 
                     currentLine = new Vector<>(
                             Arrays.asList(line.split(regex))
                     );
 
-                    // TODO This is debugging
+                    /*
                     for (String word : currentLine) {
                         System.out.print(word + "_");
                     }
                     System.out.println();
+                     */
                 }
 
             }
