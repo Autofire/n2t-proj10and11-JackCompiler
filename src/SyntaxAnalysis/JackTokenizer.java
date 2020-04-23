@@ -125,8 +125,8 @@ public class JackTokenizer {
                 if(!line.isEmpty()) {
                     String regex =
                             String.format(
-                                    "\\s+|((?<=[%1$s])|(?=[%1$s]))",
-                                    "\\Q" + "{}()[].,;+-*/&|<>=~\"" + "\\E"
+                                    "\\s+|((?<=%1$s)|(?=%1$s))",
+                                    "[\\Q" + "{}()[].,;+-*/&|<>=~\"" + "\\E]"
                             );
 
                     currentLine = new Vector<String>(
