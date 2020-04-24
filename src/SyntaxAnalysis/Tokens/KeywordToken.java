@@ -36,6 +36,10 @@ public class KeywordToken implements Token {
         kw = Keyword.valueOf(word.toUpperCase());
     }
 
+    public Keyword getValue() {
+        return kw;
+    }
+
     @Override
     public String toXML() {
         return "<keyword> " + kw.name().toLowerCase() + " </keyword>";

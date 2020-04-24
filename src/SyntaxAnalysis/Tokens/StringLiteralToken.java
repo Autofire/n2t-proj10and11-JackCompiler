@@ -16,6 +16,10 @@ public class StringLiteralToken implements Token {
         }
     }
 
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public String toXML() {
         return "<stringConstant> " + value + " </stringConstant>";

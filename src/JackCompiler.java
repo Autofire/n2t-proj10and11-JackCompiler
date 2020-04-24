@@ -36,7 +36,6 @@ public class JackCompiler {
             outputFileName = rawTargetArg.replace(".jack", "C.xml");
         }
         else {
-            // TODO
             throw new IllegalArgumentException("Directories not supported");
         }
 
@@ -47,7 +46,7 @@ public class JackCompiler {
             JackTokenizer tokenizer = new JackTokenizer(reader);
 
             while(tokenizer.hasMoreTokens()) {
-                System.out.println(tokenizer.nextToken().toXML());
+                System.out.println(tokenizer.next().toXML());
             }
 
         } catch (FileNotFoundException e) {

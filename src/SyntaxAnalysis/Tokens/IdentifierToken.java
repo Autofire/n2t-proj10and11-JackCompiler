@@ -21,8 +21,13 @@ public class IdentifierToken implements Token {
         }
     }
 
+    public String getValue() {
+        return identifier;
+    }
+
     @Override
     public String toXML() {
         return "<identifier> " + identifier + " </identifier>";
     }
+
 }

@@ -26,6 +26,10 @@ public class IntLiteralToken implements Token {
         }
     }
 
+    public int getValue() {
+        return value;
+    }
+
     @Override
     public String toXML() {
         return "<integerConstant> " + value + " </integerConstant>";

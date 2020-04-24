@@ -23,21 +23,21 @@ public class JackTokenizer {
         this.reader = in;
     }
 
-    @Deprecated
-    public boolean ready() throws IOException {
-        // TODO We need a hasMoreTokens function instead...
-        return reader.ready();
-    }
-
     /**
      * Checks if there are more tokens. This may cause a read
      * from the file to occur.
      * @return True if there is at least unhandled 1 token.
      * @throws IOException if a read error occurs
      */
-    public boolean hasMoreTokens() throws IOException {
-        if(nextToken == null) {
-            nextToken = readNextToken();
+    public boolean hasMoreTokens() {
+        try {
+            if (nextToken == null) {
+                nextToken = readNextToken();
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
 
         return nextToken != null;
@@ -49,15 +49,29 @@ public class JackTokenizer {
      * @return The token, or null if hasMoreTokens is false.
      * @throws IOException if a read error occurs
      */
-    public Token nextToken() throws IOException {
+    public Token next() {
         Token currentToken = null;
 
-        if(hasMoreTokens()) {
-            currentToken = nextToken;
-            nextToken = readNextToken();
+        try {
+            if (hasMoreTokens()) {
+                currentToken = nextToken;
+                nextToken = readNextToken();
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
 
         return currentToken;
+    }
+
+    public Token peek() {
+        if(hasMoreTokens()) {
+            return nextToken;
+        }
+        else {
+            return null;
+        }
     }
 
     /**

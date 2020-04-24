@@ -1,5 +1,7 @@
 package SyntaxAnalysis;
 
+import CodeGeneration.CompilationEngine;
+
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,13 +45,19 @@ public class JackAnalyzer {
             try(BufferedReader reader = new BufferedReader(new FileReader(inputFile));
                 PrintStream writer = new PrintStream(outputFile)) {
 
+                /*
                 JackTokenizer tokenizer = new JackTokenizer(reader);
 
                 writer.println("<tokens>");
                 while(tokenizer.hasMoreTokens()) {
-                    writer.println(tokenizer.nextToken().toXML());
+                    writer.println(tokenizer.next().toXML());
                 }
                 writer.println("</tokens>");
+                 */
+
+                CompilationEngine engine = new CompilationEngine(reader, writer);
+                engine.compile();
+
             }
 
         }

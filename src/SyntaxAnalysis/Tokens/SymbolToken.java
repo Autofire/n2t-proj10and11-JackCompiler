@@ -21,6 +21,10 @@ public class SymbolToken implements Token {
         }
     }
 
+    public char getValue() {
+        return symbol;
+    }
+
     @Override
     public String toXML() {
         String xmlOutput;
