@@ -1,6 +1,6 @@
 package SyntaxAnalysis.Tokens;
 
-public class SymbolToken implements Token {
+public class SymbolToken extends AbstractToken {
 
     public static final String ALL_SYMBOLS = "{}()[].,;+-*/&|<>=~";
     public static boolean isValid(char value) {
@@ -12,7 +12,9 @@ public class SymbolToken implements Token {
 
     private char symbol;
 
-    public SymbolToken(String value) {
+    public SymbolToken(int line, String value) {
+        super(line);
+
         if(isValid(value)) {
             symbol = value.charAt(0);
         }
@@ -23,6 +25,11 @@ public class SymbolToken implements Token {
 
     public char getValue() {
         return symbol;
+    }
+
+    @Override
+    public String toString() {
+        return Character.toString(symbol);
     }
 
     @Override

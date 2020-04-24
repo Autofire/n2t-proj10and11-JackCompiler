@@ -1,6 +1,6 @@
 package SyntaxAnalysis.Tokens;
 
-public class IdentifierToken implements Token {
+public class IdentifierToken extends AbstractToken {
 
     private static final String VALID_INIT = "[A-Za-z_]";
     private static final String VALID_BODY = "[A-Za-z0-9_]";
@@ -12,7 +12,9 @@ public class IdentifierToken implements Token {
     }
 
     private String identifier;
-    public IdentifierToken(String identifier) {
+    public IdentifierToken(int line, String identifier) {
+        super(line);
+
         if(isValid(identifier)) {
             this.identifier = identifier;
         }
@@ -22,6 +24,11 @@ public class IdentifierToken implements Token {
     }
 
     public String getValue() {
+        return identifier;
+    }
+
+    @Override
+    public String toString() {
         return identifier;
     }
 

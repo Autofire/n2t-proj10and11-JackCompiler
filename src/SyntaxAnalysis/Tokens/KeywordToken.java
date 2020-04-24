@@ -1,27 +1,20 @@
 package SyntaxAnalysis.Tokens;
 
+import SyntaxAnalysis.KeywordType;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
-public class KeywordToken implements Token {
+public class KeywordToken extends AbstractToken {
 
-    //region Statics and enums
-    public enum Keyword {
-        CLASS, METHOD, FUNCTION, CONSTRUCTOR,
-        INT, BOOLEAN, CHAR, VOID,
-        VAR, STATIC, FIELD, LET, DO,
-        IF, ELSE, WHILE, RETURN,
-        TRUE, FALSE, NULL, THIS
-    }
-    private static final Map<String, Keyword> nameIndex =
-            new HashMap<String, Keyword>(Keyword.values().length);
+    private static final Map<String, KeywordType> nameIndex =
+            new HashMap<String, KeywordType>(KeywordType.values().length);
     static {
-        for (Keyword suit : Keyword.values()) {
+        for (KeywordType suit : KeywordType.values()) {
             nameIndex.put(suit.name(), suit);
         }
     }
-    public static Keyword lookupByName(String name) {
+    public static KeywordType lookupByName(String name) {
         return nameIndex.get(name);
     }
 
@@ -30,14 +23,21 @@ public class KeywordToken implements Token {
     }
     //endregion
 
-    private Keyword kw;
+    private KeywordType kw;
 
-    public KeywordToken(String word) {
-        kw = Keyword.valueOf(word.toUpperCase());
+    public KeywordToken(int line, String word) {
+        super(line);
+
+        kw = KeywordType.valueOf(word.toUpperCase());
     }
 
-    public Keyword getValue() {
+    public KeywordType getValue() {
         return kw;
+    }
+
+    @Override
+    public String toString() {
+        return kw.toString();
     }
 
     @Override
@@ -45,8 +45,4 @@ public class KeywordToken implements Token {
         return "<keyword> " + kw.name().toLowerCase() + " </keyword>";
     }
 
-    @Override
-    public String toString() {
-        return kw.toString();
-    }
 }

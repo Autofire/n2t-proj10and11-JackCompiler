@@ -1,6 +1,6 @@
 package SyntaxAnalysis.Tokens;
 
-public class IntLiteralToken implements Token {
+public class IntLiteralToken extends AbstractToken {
 
     private static final int LOWER_BOUND = 0;
     private static final int UPPER_BOUND = 32767;
@@ -17,7 +17,9 @@ public class IntLiteralToken implements Token {
     }
 
     private int value;
-    public IntLiteralToken(String value) {
+    public IntLiteralToken(int line, String value) {
+        super(line);
+
         if(isValid(value)) {
             this.value = Integer.parseInt(value);
         }
@@ -28,6 +30,11 @@ public class IntLiteralToken implements Token {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(value);
     }
 
     @Override

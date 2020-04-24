@@ -19,8 +19,23 @@ public class JackTokenizer {
     private boolean unclosedBlockComment = false;
     private Token nextToken;
 
+    /**
+     * This matches whatever line we are actually on in the file.
+     */
+    private int lineNumber = 0;
+
+
     public JackTokenizer(BufferedReader in) {
         this.reader = in;
+    }
+
+    /**
+     * Gets the next token's line number. Note that this will advance
+     * every time you go past the end of a line.
+     * @return The line number of the next token.
+     */
+    public int getLineNumber() {
+        return lineNumber;
     }
 
     /**
@@ -133,13 +148,13 @@ public class JackTokenizer {
             currentLine.remove(0);
 
             if(SymbolToken.isValid(tStr)) {
-                result = new SymbolToken(tStr);
+                result = new SymbolToken(lineNumber, tStr);
             }
             else if(KeywordToken.isValid(tStr)) {
-                result = new KeywordToken(tStr);
+                result = new KeywordToken(lineNumber, tStr);
             }
             else if(IntLiteralToken.isValid(tStr)) {
-                result = new IntLiteralToken(tStr);
+                result = new IntLiteralToken(lineNumber, tStr);
             }
             else if(tStr.equals("\"")) {
                 // Ok, so it *looks* like a string literal.
@@ -154,7 +169,7 @@ public class JackTokenizer {
 
                 String strLiteral = rawStr.toString();
                 if(StringLiteralToken.isValid(strLiteral)) {
-                    result = new StringLiteralToken(strLiteral);
+                    result = new StringLiteralToken(lineNumber, strLiteral);
                 }
                 else {
                     throw new RuntimeException("Malformed string literal");
@@ -162,7 +177,7 @@ public class JackTokenizer {
 
             }
             else if(IdentifierToken.isValid(tStr)) {
-                result = new IdentifierToken(tStr);
+                result = new IdentifierToken(lineNumber, tStr);
             }
             else {
                 throw new RuntimeException("Malformed input");
@@ -202,6 +217,7 @@ public class JackTokenizer {
         // We will keep going until we get a non-empty line.
         while(currentLine == null && reader.ready()) {
             String line = reader.readLine();
+            lineNumber++;
 
             // First, we'll check if we're in a block. If we are,
             // we gotta delete until the next */. If that DOESN'T

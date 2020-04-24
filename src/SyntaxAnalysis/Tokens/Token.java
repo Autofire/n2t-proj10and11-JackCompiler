@@ -1,5 +1,8 @@
 package SyntaxAnalysis.Tokens;
 
 public interface Token {
-    public String toXML();
+
+    int getLineNumber();
+
+    String toXML();
 }
