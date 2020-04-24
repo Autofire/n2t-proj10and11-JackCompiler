@@ -1,4 +1,4 @@
-package SyntaxAnalysis;
+package CodeGeneration;
 
 public class CompilationEngine {
 }
