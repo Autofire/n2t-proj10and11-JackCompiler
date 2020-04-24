@@ -231,6 +231,8 @@ public class JackTokenizer {
                 // be able to extract some meaningful code from it.
                 if(!line.isEmpty()) {
 
+                    // TODO Handle escaped quotes
+
                     // See https://stackoverflow.com/a/11503678
                     // See https://stackoverflow.com/a/2206432
                     String regex = String.format(

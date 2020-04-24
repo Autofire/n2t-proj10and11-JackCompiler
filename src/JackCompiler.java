@@ -1,3 +1,4 @@
+import SyntaxAnalysis.JackAnalyzer;
 import SyntaxAnalysis.JackTokenizer;
 import SyntaxAnalysis.Tokens.*;
 
@@ -12,27 +13,27 @@ public class JackCompiler {
         // NOTE: This uses some early return statements
         //       to avoid nesting everything in a big 'ol if-else statement
         if(args.length != 1) {
-            String line = "test */ /* */ */ test /* test */ // more blah // yet more blah /* /* blah;";
-
-            System.out.println(line = line.replaceFirst("^.*?\\*/", ""));
-            System.out.println(line = line.replaceAll("/\\*.*?\\*/", ""));
-            System.out.println(line = line.replaceFirst("/\\*.*$", ""));
-            System.out.println(line = line.replaceFirst("//.*$", ""));
-
-            System.out.println("  ".strip().split("\\s+")[0].isEmpty() );
-
-            String line2 = "blah; // test // test2";
-            System.out.println(line2.replaceFirst("//.*", ""));
-
+            System.out.println("Incorrect usage");
             return;
         }
 
         String rawTargetArg = args[0];
 
+        JackAnalyzer analyzer = new JackAnalyzer();
+        analyzer.add(new File(rawTargetArg));
+        try {
+            analyzer.analyze();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /*
         String targetFileName;
+        String outputFileName;
 
         if(rawTargetArg.endsWith(".jack")) {
             targetFileName = rawTargetArg;
+            outputFileName = rawTargetArg.replace(".jack", "C.xml");
         }
         else {
             // TODO
@@ -40,6 +41,7 @@ public class JackCompiler {
         }
 
         System.out.println("Opening " + targetFileName);
+        System.out.println("Writing to " + outputFileName);
 
         try(BufferedReader reader = new BufferedReader(new FileReader(targetFileName))) {
             JackTokenizer tokenizer = new JackTokenizer(reader);
@@ -53,6 +55,7 @@ public class JackCompiler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+         */
 
     }
 }
