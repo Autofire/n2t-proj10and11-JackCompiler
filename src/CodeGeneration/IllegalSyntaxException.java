@@ -4,6 +4,8 @@ package CodeGeneration;
 // Project: 10 & 11
 //     Due: 04/29/2020
 
+import SyntaxAnalysis.Tokens.Token;
+
 import java.util.InputMismatchException;
 
 public class IllegalSyntaxException extends InputMismatchException {
@@ -21,6 +23,10 @@ public class IllegalSyntaxException extends InputMismatchException {
         super("(Line " + lineNumber + ") " + s);
 
         this.lineNumber = lineNumber;
+    }
+
+    public IllegalSyntaxException(Token t, String s) {
+        this(t.getLineNumber(), s);
     }
 
     public int getLineNumber() {
