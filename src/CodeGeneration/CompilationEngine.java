@@ -96,7 +96,7 @@ public class CompilationEngine {
         T castToken = safeCast(rawToken, type);
 
         if(castToken == null) {
-            throw new IllegalSyntaxException(rawToken, "Unexpected token: " + rawToken.toXML());
+            throw new IllegalSyntaxException(rawToken, "Unexpected token: " + rawToken);
         }
 
         return castToken;
@@ -106,6 +106,15 @@ public class CompilationEngine {
         SymbolToken token = getTokenOrDie(SymbolToken.class);
         if(token.getValue() != symbol) {
             throw new IllegalSyntaxException(token, "Expected " + symbol + " but got " + token.getValue());
+        }
+
+        return token;
+    }
+
+    private KeywordToken getKeywordOrDie(KeywordType keyword) {
+        KeywordToken token = getTokenOrDie(KeywordToken.class);
+        if(token.getValue() != keyword) {
+            throw new IllegalSyntaxException(token, "Expected " + keyword + " but got " + token.getValue());
         }
 
         return token;
@@ -145,66 +154,61 @@ public class CompilationEngine {
 
     private void compileClass() {
         // Get tokens
-        KeywordToken classToken = getTokenOrDie(KeywordToken.class);
+        KeywordToken classToken = getKeywordOrDie(KeywordType.CLASS);
         IdentifierToken className = getTokenOrDie(IdentifierToken.class);
         SymbolToken openCurly = getSymbolOrDie('{');
 
-        if(classToken.getValue() == KeywordType.CLASS) {
-            //region GEN Opening class code
-            write("<class>");
-            indentLevel++;
+        //region GEN Opening class code
+        write("<class>");
+        indentLevel++;
 
-            write(classToken);
-            write(className);
-            write(openCurly);
-            //endregion
+        write(classToken);
+        write(className);
+        write(openCurly);
+        //endregion
 
-            boolean done = false;
-            while(!done && tokenizer.hasMoreTokens()) {
-                Token nextToken = tokenizer.peek();
-                KeywordToken keyword = safeCast(nextToken, KeywordToken.class);
-                SymbolToken symbol = safeCast(nextToken, SymbolToken.class);
+        boolean done = false;
+        while(!done && tokenizer.hasMoreTokens()) {
+            Token nextToken = tokenizer.peek();
+            KeywordToken keyword = safeCast(nextToken, KeywordToken.class);
+            SymbolToken symbol = safeCast(nextToken, SymbolToken.class);
 
-                if(symbol != null && symbol.getValue() == '}') {
+            if(symbol != null && symbol.getValue() == '}') {
 
-                    //region GEN Closing class code
-                    tokenizer.next();
-                    write(nextToken);
+                //region GEN Closing class code
+                tokenizer.next();
+                write(nextToken);
 
-                    indentLevel--;
-                    write("</class>");
-                    //endregion
+                indentLevel--;
+                write("</class>");
+                //endregion
 
-                    done = true;
+                done = true;
+            }
+            else if(keyword != null) {
+                if(keyword.getValue() == KeywordType.STATIC ||
+                   keyword.getValue() == KeywordType.FIELD) {
+                    compileClassVarDec();
                 }
-                else if(keyword != null) {
-                    if(keyword.getValue() == KeywordType.STATIC ||
-                       keyword.getValue() == KeywordType.FIELD) {
-                        compileClassVarDec();
-                    }
-                    else if(keyword.getValue() == KeywordType.CONSTRUCTOR ||
-                            keyword.getValue() == KeywordType.FUNCTION ||
-                            keyword.getValue() == KeywordType.METHOD) {
-                        compileSubroutine();
-                    }
-                    else  {
-                        throw new IllegalSyntaxException(nextToken, "Unexpected keyword in class body: " + nextToken);
-                    }
+                else if(keyword.getValue() == KeywordType.CONSTRUCTOR ||
+                        keyword.getValue() == KeywordType.FUNCTION ||
+                        keyword.getValue() == KeywordType.METHOD) {
+                    compileSubroutine();
                 }
-                else {
-                    write( nextToken.toXML() + "(Unsupported)");
-                    tokenizer.next();   // Normally the child function consume this
+                else  {
+                    throw new IllegalSyntaxException(nextToken, "Unexpected keyword in class body: " + nextToken);
                 }
             }
-
-            if(!done && !tokenizer.hasMoreTokens()) {
-                throw new IllegalSyntaxException(tokenizer.getLineNumber(), "Unexpected end of file");
+            else {
+                write( nextToken.toXML() + "(Unsupported)");
+                tokenizer.next();   // Normally the child function consume this
             }
+        }
 
+        if(!done && !tokenizer.hasMoreTokens()) {
+            throw new IllegalSyntaxException(tokenizer.getLineNumber(), "Unexpected end of file");
         }
-        else {
-            throw new IllegalSyntaxException(classToken, "Malformed class definition");
-        }
+
     }
 
     private void compileClassVarDec() {
@@ -332,6 +336,7 @@ public class CompilationEngine {
         KeywordToken nextToken = safeCast(tokenizer.peek(), KeywordToken.class);
         while(nextToken != null && nextToken.getValue() == KeywordType.VAR) {
             compileVarDec();
+            nextToken = safeCast(tokenizer.peek(), KeywordToken.class);
         }
 
         // Now that that's done, we can get onto the rest of the subroutine
@@ -349,10 +354,7 @@ public class CompilationEngine {
     private void compileVarDec() {
 
         // Ensure we have the var keyword.
-        KeywordToken varKeyword = getTokenOrDie(KeywordToken.class);
-        if(varKeyword.getValue() != KeywordType.VAR) {
-            throw new IllegalSyntaxException( varKeyword, "Subroutine variable declarations must be 'var'" );
-        }
+        KeywordToken varKeyword = getKeywordOrDie(KeywordType.VAR);
 
         // Next, figure out the type.
         Token varType = tokenizer.next();
@@ -432,11 +434,7 @@ public class CompilationEngine {
         write("<doStatement>");
         indentLevel++;
 
-        KeywordToken doToken = getTokenOrDie(KeywordToken.class);
-        if(doToken.getValue() != KeywordType.DO) {
-            throw new IllegalSyntaxException(doToken, "Expected 'do' keyword");
-        }
-        write(doToken);
+        write(getKeywordOrDie(KeywordType.DO));
 
         List<Token> subroutineTokens = new ArrayList<>();
         subroutineTokens.add(getTokenOrDie(IdentifierToken.class));
@@ -456,11 +454,7 @@ public class CompilationEngine {
         write("<letStatement>");
         indentLevel++;
 
-        KeywordToken letToken = getTokenOrDie(KeywordToken.class);
-        if(letToken.getValue() != KeywordType.DO) {
-            throw new IllegalSyntaxException(letToken, "Expected 'let' keyword");
-        }
-        write(letToken);
+        write(getKeywordOrDie(KeywordType.LET));
 
         IdentifierToken varName = getTokenOrDie(IdentifierToken.class);
         write(varName);
@@ -483,26 +477,225 @@ public class CompilationEngine {
 
     private void compileWhile() {
 
-    }
+        write("<whileStatement>");
+        indentLevel++;
 
-    private void compileReturn() {
+        write(getKeywordOrDie(KeywordType.WHILE));
 
+        write(getSymbolOrDie('('));
+        compileExpression();
+        write(getSymbolOrDie(')'));
+
+        write(getSymbolOrDie('{'));
+        compileStatements();
+        write(getSymbolOrDie('}'));
+
+        indentLevel--;
+        write("</whileStatement>");
     }
 
     private void compileIf() {
 
+        write("<ifStatement>");
+        indentLevel++;
+
+        write(getKeywordOrDie(KeywordType.IF));
+
+        write(getSymbolOrDie('('));
+        compileExpression();
+        write(getSymbolOrDie(')'));
+
+        write(getSymbolOrDie('{'));
+        compileStatements();
+        write(getSymbolOrDie('}'));
+
+        KeywordToken elseToken = safeCast(tokenizer.peek(), KeywordToken.class);
+        if(elseToken != null && elseToken.getValue() == KeywordType.ELSE) {
+            write(tokenizer.next());
+
+            write(getSymbolOrDie('{'));
+            compileStatements();
+            write(getSymbolOrDie('}'));
+        }
+
+        indentLevel--;
+        write("</ifStatement>");
     }
 
+    private void compileReturn() {
+
+        write("<returnStatement>");
+        indentLevel++;
+
+        write(getKeywordOrDie(KeywordType.RETURN));
+
+        SymbolToken symbol = safeCast(tokenizer.peek(), SymbolToken.class);
+        if(!(symbol != null && symbol.getValue() == ';')) {
+            compileExpression();
+        }
+
+        write(getSymbolOrDie(';'));
+
+        indentLevel--;
+        write("</returnStatement>");
+    }
+
+
+    /**
+     * This continues through terms until it encounters something
+     * which is NOT a binary operator symbol. It will not consume
+     * the token which causes this function to stop.
+     */
     private void compileExpression() {
 
+        // Note that unary operands are treated as a part of the term,
+        // so we don't need to worry about those.
+
+        write("<expression>");
+        indentLevel++;
+
+        compileTerm();
+
+        SymbolToken symbolAfterToken = safeCast(tokenizer.peek(), SymbolToken.class);
+        while(symbolAfterToken != null && symbolAfterToken.isBinaryOp() ) {
+            write(tokenizer.next());
+            compileTerm();
+
+            symbolAfterToken = safeCast(tokenizer.peek(), SymbolToken.class);
+        }
+
+        indentLevel--;
+        write("</expression>");
     }
 
     private void compileTerm() {
+        write("<term>");
+        indentLevel++;
 
+        Token termToken = tokenizer.next();
+
+        IntLiteralToken    intLiteral       = safeCast(termToken, IntLiteralToken.class);
+        StringLiteralToken stringLiteral    = safeCast(termToken, StringLiteralToken.class);
+        KeywordToken       keyword          = safeCast(termToken, KeywordToken.class);
+        SymbolToken        symbol           = safeCast(termToken, SymbolToken.class);
+        IdentifierToken    identifier       = safeCast(termToken, IdentifierToken.class);
+
+        if(intLiteral != null) {
+            write(intLiteral);
+        }
+        else if(stringLiteral != null) {
+            write(stringLiteral);
+        }
+        else if(keyword != null && keyword.isConst()) {
+            write(keyword);
+        }
+        else if(symbol != null) {
+            // A symbol means one of two things:
+            //  1. UNARY_OP term
+            //  2. (expression)
+            if(symbol.isUnaryOp()) {
+                write(symbol);
+                compileTerm();
+            }
+            else if(symbol.getValue() == '(') {
+                write(symbol);
+                compileExpression();
+                write(getSymbolOrDie(')'));
+            }
+            else {
+                throw new IllegalSyntaxException(symbol, "Unexpected symbol: " + symbol);
+            }
+        }
+        else if(identifier != null) {
+            // Here's the messy one. Identifiers can mean any one of these things:
+            //  1. varName
+            //  2. varName[expression]
+            //  3. subroutineCall
+            //   3a. callName( ... )
+            //   3b. obj.callName( ... )
+            //
+            // For all but the first one, those are determined via symbols. Thus,
+            // we can easily check for them all at once.
+
+            SymbolToken nextSymbol = safeCast(tokenizer.peek(), SymbolToken.class);
+
+            // If this stays false, we'll assume it's plain variable.
+            boolean handledTerm = false;
+
+            if(nextSymbol != null) {
+                // If there's a symbol, we'll assume it's handled.
+                // This'll get set back false if the switch below doesn't
+                // detect anything to do.
+                handledTerm = true;
+
+                switch(nextSymbol.getValue()) {
+                    case '[':
+                        write(getSymbolOrDie('['));
+                        compileExpression();
+                        write(getSymbolOrDie(']'));
+                        break;
+
+                    case '.':
+                        write(getSymbolOrDie('('));
+                        compileSubroutineCall(new Token[]{
+                            identifier,
+                            getSymbolOrDie('.'),
+                            getTokenOrDie(IdentifierToken.class)
+                        });
+                        write(getSymbolOrDie(')'));
+
+                    case '(':
+                        write(getSymbolOrDie('('));
+                        compileSubroutineCall(new Token[]{identifier});
+                        write(getSymbolOrDie(')'));
+                        break;
+
+                    default:
+                        handledTerm = false;
+                }
+            }
+
+            if(!handledTerm) {
+                write(identifier);
+            }
+        }
+        else {
+            throw new IllegalSyntaxException(termToken, "Unexpected token in term: " + termToken);
+        }
+
+        indentLevel--;
+        write("</term>");
     }
 
+    /**
+     * This continues to consume expressions until a ')' is found.
+     * (In every situation with an expression list, they are always bound
+     * by parenthesis so we're exploiting that assumption here.)
+     */
     private void compileExpressionList() {
 
+        write("<expressionList>");
+        indentLevel++;
+
+        SymbolToken symbol = safeCast(tokenizer.peek(), SymbolToken.class);
+        if(symbol == null || symbol.getValue() != ')') {
+            // We have at LEAST one expression, maybe more. After each expression,
+            // we can be sure that we will always have a symbol.
+            compileExpression();
+
+            // So now we either have a comma followed by another expression
+            // (and this can repeat many times), or a close parenthesis.
+            symbol = peekTokenOrDie(SymbolToken.class);
+            while(symbol.getValue() == ',') {
+                write(tokenizer.next());    // Write the ','
+                compileExpression();
+
+                symbol = peekTokenOrDie(SymbolToken.class);
+            }
+        }
+
+        indentLevel--;
+        write("</expressionList>");
     }
 
     /**
@@ -522,15 +715,18 @@ public class CompilationEngine {
      */
     private void compileSubroutineCall(Token[] tokens) {
         IdentifierToken objName;
+        SymbolToken symbol;
         IdentifierToken subroutineName;
+
+        // TODO Overload this method instead of having it take an array.
 
         // The second token will always either be '(' or '.', so we can
         // use that to check whether this is a function or a method.
+        /*
         SymbolToken symbol = (SymbolToken)tokens[1];
         if(symbol.getValue() == '.') {
             objName = (IdentifierToken)tokens[0];
             subroutineName = (IdentifierToken)tokens[2];
-
         }
         else if(symbol.getValue() == '(') {
             objName = null;
@@ -539,6 +735,21 @@ public class CompilationEngine {
         else {
             throw new IllegalSyntaxException(symbol, "Unexpected symbol in method call: " + symbol);
         }
+         */
+        if(tokens.length == 1) {
+            objName = null;
+            symbol = null;
+            subroutineName = (IdentifierToken)tokens[0];
+        }
+        else if(tokens.length == 3) {
+            objName = (IdentifierToken)tokens[0];
+            symbol = (SymbolToken)tokens[1];
+            subroutineName = (IdentifierToken)tokens[2];
+        }
+        else {
+            throw new IllegalArgumentException("Array length must be 1 or 3");
+        }
+
 
         // region GEN Initial method call setup
         // Note that, in our XML format, there is no "subroutineCall" block,

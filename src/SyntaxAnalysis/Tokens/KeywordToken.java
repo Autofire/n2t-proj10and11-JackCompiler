@@ -2,11 +2,20 @@ package SyntaxAnalysis.Tokens;
 
 import SyntaxAnalysis.KeywordType;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class KeywordToken extends AbstractToken {
 
+    public static final List<KeywordType> KEYWORD_CONSTS = Arrays.asList(
+        new KeywordType[]{
+            KeywordType.TRUE, KeywordType.FALSE, KeywordType.NULL, KeywordType.THIS
+        }
+    );
+
+    // region String conversion and parsing
     private static final Map<String, KeywordType> nameIndex =
             new HashMap<String, KeywordType>(KeywordType.values().length);
     static {
@@ -24,11 +33,17 @@ public class KeywordToken extends AbstractToken {
     //endregion
 
     private KeywordType kw;
+    private String originalWord;
 
     public KeywordToken(int line, String word) {
         super(line);
 
+        originalWord = word;
         kw = KeywordType.valueOf(word.toUpperCase());
+    }
+
+    public boolean isConst() {
+        return KEYWORD_CONSTS.contains(kw);
     }
 
     public KeywordType getValue() {
@@ -37,12 +52,12 @@ public class KeywordToken extends AbstractToken {
 
     @Override
     public String toString() {
-        return kw.toString();
+        return originalWord;
     }
 
     @Override
     public String toXML() {
-        return "<keyword> " + kw.name().toLowerCase() + " </keyword>";
+        return "<keyword> " + originalWord + " </keyword>";
     }
 
 }
