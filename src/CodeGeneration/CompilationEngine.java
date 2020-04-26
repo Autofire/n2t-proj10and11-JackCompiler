@@ -636,18 +636,15 @@ public class CompilationEngine {
                         break;
 
                     case '.':
-                        write(getSymbolOrDie('('));
                         compileSubroutineCall(new Token[]{
                             identifier,
                             getSymbolOrDie('.'),
                             getTokenOrDie(IdentifierToken.class)
                         });
-                        write(getSymbolOrDie(')'));
+                        break;
 
                     case '(':
-                        write(getSymbolOrDie('('));
                         compileSubroutineCall(new Token[]{identifier});
-                        write(getSymbolOrDie(')'));
                         break;
 
                     default:
