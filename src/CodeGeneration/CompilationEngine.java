@@ -6,8 +6,9 @@ import SyntaxAnalysis.Tokens.*;
 
 import java.io.BufferedReader;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 
 public class CompilationEngine {
 
@@ -221,7 +222,7 @@ public class CompilationEngine {
         String typeName = convertTokenToTypeName(varType, false);
 
         // Get every single variable name.
-        List<IdentifierToken> names = compileVarDecList();
+        List<IdentifierToken> names = parseVarDecList();
 
         // Alright, we have everything we need now.
         // region GEN Variable declaration code
@@ -358,7 +359,7 @@ public class CompilationEngine {
         String typeName = convertTokenToTypeName(varType, false);
 
         // Get every single variable name.
-        List<IdentifierToken> names = compileVarDecList();
+        List<IdentifierToken> names = parseVarDecList();
 
         // Alright, we have everything we need now.
         // region GEN Variable declaration code
@@ -392,7 +393,32 @@ public class CompilationEngine {
         SymbolToken nextTokenAsSymbol = safeCast(nextToken, SymbolToken.class);
         while(!(nextTokenAsSymbol != null && nextTokenAsSymbol.getValue() == '}')) {
 
-            write(tokenizer.next().toXML() + " (Unsupported statement)");
+            //write(tokenizer.next().toXML() + " (Unsupported statement)");
+            KeywordToken keyword = peekTokenOrDie(KeywordToken.class);
+            switch(keyword.getValue()) {
+                case LET:
+                    compileLet();
+                    break;
+
+                case DO:
+                    compileDo();
+                    break;
+
+                case IF:    // This consumes the else as well
+                    compileIf();
+                    break;
+
+                case WHILE:
+                    compileWhile();
+                    break;
+
+                case RETURN:
+                    compileReturn();
+                    break;
+
+                default:
+                    throw new IllegalSyntaxException(keyword, "Unexpected keyword " + keyword);
+            }
 
             nextToken = tokenizer.peek();
             nextTokenAsSymbol = safeCast(nextToken, SymbolToken.class);
@@ -403,11 +429,56 @@ public class CompilationEngine {
     }
 
     private void compileDo() {
+        write("<doStatement>");
+        indentLevel++;
 
+        KeywordToken doToken = getTokenOrDie(KeywordToken.class);
+        if(doToken.getValue() != KeywordType.DO) {
+            throw new IllegalSyntaxException(doToken, "Expected 'do' keyword");
+        }
+        write(doToken);
+
+        List<Token> subroutineTokens = new ArrayList<>();
+        subroutineTokens.add(getTokenOrDie(IdentifierToken.class));
+        if(peekTokenOrDie(SymbolToken.class).getValue() == '.') {
+            subroutineTokens.add(getTokenOrDie(SymbolToken.class));
+            subroutineTokens.add(getTokenOrDie(IdentifierToken.class));
+        }
+        compileSubroutineCall(subroutineTokens.toArray(new Token[0]));
+
+        write(getSymbolOrDie(';'));
+
+        indentLevel--;
+        write("</doStatement>");
     }
 
     private void compileLet() {
+        write("<letStatement>");
+        indentLevel++;
 
+        KeywordToken letToken = getTokenOrDie(KeywordToken.class);
+        if(letToken.getValue() != KeywordType.DO) {
+            throw new IllegalSyntaxException(letToken, "Expected 'let' keyword");
+        }
+        write(letToken);
+
+        IdentifierToken varName = getTokenOrDie(IdentifierToken.class);
+        write(varName);
+
+        SymbolToken symbol = peekTokenOrDie(SymbolToken.class);
+        if(symbol.getValue() == '[') {
+            write(getSymbolOrDie('['));
+            compileExpression();
+            write(getSymbolOrDie(']'));
+        }
+        write(getSymbolOrDie('='));
+
+        compileExpression();
+
+        write(getSymbolOrDie(';'));
+
+        indentLevel--;
+        write("</letStatement>");
     }
 
     private void compileWhile() {
@@ -434,6 +505,55 @@ public class CompilationEngine {
 
     }
 
+    /**
+     * Figures out what to do with a subroutine. Subroutines take one
+     * of two forms:
+     *  1. name(expressionList)
+     *  2. obj.name(expressionList)
+     *
+     * Callers must pass in either the name 'token', or the tokens for
+     * 'obj.name'. In the middle of expressions, we can do this because
+     * we know that an identifier followed immediately by '(' or '.'
+     * must be a subroutine call.
+     *
+     * This consumes '(' and ')', in addition to the expressionList inside.
+     *
+     * @param tokens List of tokens which corresponds to a subroutine call.
+     */
+    private void compileSubroutineCall(Token[] tokens) {
+        IdentifierToken objName;
+        IdentifierToken subroutineName;
+
+        // The second token will always either be '(' or '.', so we can
+        // use that to check whether this is a function or a method.
+        SymbolToken symbol = (SymbolToken)tokens[1];
+        if(symbol.getValue() == '.') {
+            objName = (IdentifierToken)tokens[0];
+            subroutineName = (IdentifierToken)tokens[2];
+
+        }
+        else if(symbol.getValue() == '(') {
+            objName = null;
+            subroutineName = (IdentifierToken)tokens[0];
+        }
+        else {
+            throw new IllegalSyntaxException(symbol, "Unexpected symbol in method call: " + symbol);
+        }
+
+        // region GEN Initial method call setup
+        // Note that, in our XML format, there is no "subroutineCall" block,
+        // so we can just spew our code out.
+        if(objName != null) {
+            write(objName);
+            write(symbol);
+        }
+        write(subroutineName);
+
+        write(getSymbolOrDie('('));
+        compileExpressionList();
+        write(getSymbolOrDie(')'));
+        // endregion
+    }
 
     /**
      * This specifically consumes the set of names following a variable
@@ -442,7 +562,7 @@ public class CompilationEngine {
      * is at least one name followed by a ';', and throws an exception
      * if this isn't the case.
      */
-    private List<IdentifierToken> compileVarDecList() {
+    private List<IdentifierToken> parseVarDecList() {
 
         // Now we'll get the variable names. We MUST see at least one
         // name, but we might see more after that. It'll be in the
@@ -451,7 +571,7 @@ public class CompilationEngine {
         // Thus, we read the first name, and then repeat as long
         // as we see commas. If we see anything else, we stop and
         // make sure it's a semicolon.
-        List<IdentifierToken> names = new Vector<>();
+        List<IdentifierToken> names = new ArrayList<>();
         names.add(getTokenOrDie(IdentifierToken.class));
 
         SymbolToken symbolAfterName = getTokenOrDie(SymbolToken.class);
