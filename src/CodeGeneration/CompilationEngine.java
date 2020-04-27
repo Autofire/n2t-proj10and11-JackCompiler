@@ -436,13 +436,14 @@ public class CompilationEngine {
 
         write(getKeywordOrDie(KeywordType.DO));
 
-        List<Token> subroutineTokens = new ArrayList<>();
-        subroutineTokens.add(getTokenOrDie(IdentifierToken.class));
+        IdentifierToken firstToken = getTokenOrDie(IdentifierToken.class);
         if(peekTokenOrDie(SymbolToken.class).getValue() == '.') {
-            subroutineTokens.add(getTokenOrDie(SymbolToken.class));
-            subroutineTokens.add(getTokenOrDie(IdentifierToken.class));
+            tokenizer.next(); // Skip the '.'
+            compileSubroutineCall(firstToken, getTokenOrDie(IdentifierToken.class));
         }
-        compileSubroutineCall(subroutineTokens.toArray(new Token[0]));
+        else {
+            compileSubroutineCall(null, firstToken);
+        }
 
         write(getSymbolOrDie(';'));
 
@@ -630,21 +631,19 @@ public class CompilationEngine {
 
                 switch(nextSymbol.getValue()) {
                     case '[':
+                        write(identifier);
                         write(getSymbolOrDie('['));
                         compileExpression();
                         write(getSymbolOrDie(']'));
                         break;
 
                     case '.':
-                        compileSubroutineCall(new Token[]{
-                            identifier,
-                            getSymbolOrDie('.'),
-                            getTokenOrDie(IdentifierToken.class)
-                        });
+                        tokenizer.next();
+                        compileSubroutineCall( identifier, getTokenOrDie(IdentifierToken.class) );
                         break;
 
                     case '(':
-                        compileSubroutineCall(new Token[]{identifier});
+                        compileSubroutineCall( null, identifier);
                         break;
 
                     default:
@@ -708,52 +707,17 @@ public class CompilationEngine {
      *
      * This consumes '(' and ')', in addition to the expressionList inside.
      *
-     * @param tokens List of tokens which corresponds to a subroutine call.
+     * @param objName Name of the object. Can be null.
+     * @param subroutineName Name of the subroutine. SHOULD NOT BE NULL.
      */
-    private void compileSubroutineCall(Token[] tokens) {
-        IdentifierToken objName;
-        SymbolToken symbol;
-        IdentifierToken subroutineName;
-
-        // TODO Overload this method instead of having it take an array.
-
-        // The second token will always either be '(' or '.', so we can
-        // use that to check whether this is a function or a method.
-        /*
-        SymbolToken symbol = (SymbolToken)tokens[1];
-        if(symbol.getValue() == '.') {
-            objName = (IdentifierToken)tokens[0];
-            subroutineName = (IdentifierToken)tokens[2];
-        }
-        else if(symbol.getValue() == '(') {
-            objName = null;
-            subroutineName = (IdentifierToken)tokens[0];
-        }
-        else {
-            throw new IllegalSyntaxException(symbol, "Unexpected symbol in method call: " + symbol);
-        }
-         */
-        if(tokens.length == 1) {
-            objName = null;
-            symbol = null;
-            subroutineName = (IdentifierToken)tokens[0];
-        }
-        else if(tokens.length == 3) {
-            objName = (IdentifierToken)tokens[0];
-            symbol = (SymbolToken)tokens[1];
-            subroutineName = (IdentifierToken)tokens[2];
-        }
-        else {
-            throw new IllegalArgumentException("Array length must be 1 or 3");
-        }
-
+    private void compileSubroutineCall(IdentifierToken objName, IdentifierToken subroutineName) {
 
         // region GEN Initial method call setup
         // Note that, in our XML format, there is no "subroutineCall" block,
         // so we can just spew our code out.
         if(objName != null) {
             write(objName);
-            write(symbol);
+            write(new SymbolToken(objName.getLineNumber(), "."));
         }
         write(subroutineName);
 

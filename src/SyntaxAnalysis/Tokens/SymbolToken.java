@@ -49,16 +49,16 @@ public class SymbolToken extends AbstractToken {
 
         switch(symbol) {
             case '<':
-                xmlOutput = "&lt";
+                xmlOutput = "&lt;";
                 break;
             case '>':
-                xmlOutput = "&gt";
+                xmlOutput = "&gt;";
                 break;
             case '&':
-                xmlOutput = "&amp";
+                xmlOutput = "&amp;";
                 break;
             default:
-                xmlOutput = symbol + "";
+                xmlOutput = Character.toString(symbol);
         }
 
         return "<symbol> " + xmlOutput + " </symbol>";

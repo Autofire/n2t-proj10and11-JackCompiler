@@ -24,7 +24,12 @@ public class JackAnalyzer {
                 inputFiles.add(target);
             }
             else if(target.isDirectory()) {
-                throw new IllegalArgumentException("Can't handle directories yet");
+                //throw new IllegalArgumentException("Can't handle directories yet");
+                for(File file : target.listFiles()) {
+                    if(file.getName().endsWith(".jack")) {
+                        inputFiles.add(file);
+                    }
+                }
             }
             else {
                 throw new IllegalArgumentException("Can only handle directories and jack files.");
