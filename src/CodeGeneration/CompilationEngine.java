@@ -442,7 +442,7 @@ public class CompilationEngine {
             compileSubroutineCall(firstToken, getTokenOrDie(IdentifierToken.class));
         }
         else {
-            compileSubroutineCall(null, firstToken);
+            compileSubroutineCall(firstToken);
         }
 
         write(getSymbolOrDie(';'));
@@ -638,12 +638,13 @@ public class CompilationEngine {
                         break;
 
                     case '.':
+                        // In this case, the identifier is the class name.
                         tokenizer.next();
                         compileSubroutineCall( identifier, getTokenOrDie(IdentifierToken.class) );
                         break;
 
                     case '(':
-                        compileSubroutineCall( null, identifier);
+                        compileSubroutineCall( identifier);
                         break;
 
                     default:
@@ -692,6 +693,10 @@ public class CompilationEngine {
 
         indentLevel--;
         write("</expressionList>");
+    }
+
+    private void compileSubroutineCall(IdentifierToken subroutineName) {
+        compileSubroutineCall(null, subroutineName);
     }
 
     /**
