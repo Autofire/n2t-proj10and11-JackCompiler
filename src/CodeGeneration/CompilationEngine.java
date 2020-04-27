@@ -1,5 +1,8 @@
 package CodeGeneration;
 
+import CodeGeneration.VariableTracking.Variable;
+import CodeGeneration.VariableTracking.VariableKind;
+import CodeGeneration.VariableTracking.VariableTable;
 import SyntaxAnalysis.JackTokenizer;
 import SyntaxAnalysis.KeywordType;
 import SyntaxAnalysis.Tokens.*;
@@ -7,22 +10,23 @@ import SyntaxAnalysis.Tokens.*;
 import java.io.BufferedReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CompilationEngine {
 
     //private BufferedReader reader;
     private JackTokenizer tokenizer;
-    private PrintStream writer;
+    private PrintStream xmlWriter;
+    private VariableTable symbolTable;
 
     private final static String INDENT = "  ";
     private int indentLevel = 0;
 
-    public CompilationEngine(BufferedReader reader, PrintStream writer) {
+    public CompilationEngine(BufferedReader reader, PrintStream xmlWriter) {
         //this.reader = reader;
         tokenizer = new JackTokenizer(reader);
-        this.writer = writer;
+        this.xmlWriter = xmlWriter;
+        symbolTable = new VariableTable();
     }
 
     public void compile() {
@@ -53,17 +57,19 @@ public class CompilationEngine {
      * Writes XML to the file. This is indented based indentLevel.
      * @param value String to write.
      */
-    private void write(String value) {
-        writer.print(getIndent());
-        writer.println(value);
+    private void writeXML(String value) {
+        if(xmlWriter != null) {
+            xmlWriter.print(getIndent());
+            xmlWriter.println(value);
+        }
     }
 
     /**
      * Writes XML to the file. This is indented based indentLevel.
      * @param t Token to write. t.toXML is called.
      */
-    private void write(Token t) {
-        write(t.toXML());
+    private void writeXML(Token t) {
+        writeXML(t.toXML());
     }
 
     private static <T> T safeCast(Token token, Class<T> type) {
@@ -159,12 +165,12 @@ public class CompilationEngine {
         SymbolToken openCurly = getSymbolOrDie('{');
 
         //region GEN Opening class code
-        write("<class>");
+        writeXML("<class>");
         indentLevel++;
 
-        write(classToken);
-        write(className);
-        write(openCurly);
+        writeXML(classToken);
+        writeXML(className);
+        writeXML(openCurly);
         //endregion
 
         boolean done = false;
@@ -177,10 +183,10 @@ public class CompilationEngine {
 
                 //region GEN Closing class code
                 tokenizer.next();
-                write(nextToken);
+                writeXML(nextToken);
 
                 indentLevel--;
-                write("</class>");
+                writeXML("</class>");
                 //endregion
 
                 done = true;
@@ -200,7 +206,7 @@ public class CompilationEngine {
                 }
             }
             else {
-                write( nextToken.toXML() + "(Unsupported)");
+                writeXML(nextToken.toXML() + "(Unsupported)");
                 tokenizer.next();   // Normally the child function consume this
             }
         }
@@ -230,20 +236,29 @@ public class CompilationEngine {
 
         // Alright, we have everything we need now.
         // region GEN Variable declaration code
-        write("<classVarDec>");
+        writeXML("<classVarDec>");
         indentLevel++;
 
-        write(locality);
-        write(varType);
-        write(names.get(0));
-        for(int i = 1; i < names.size(); i++) {
-            write(new SymbolToken(-1, ","));
-            write(names.get(i));
+        writeXML(locality);
+        writeXML(varType);
+        //writeXML(names.get(0));
+        for(int i = 0; i < names.size(); i++) {
+            //writeXML(names.get(i));
+            Variable newVar = symbolTable.define(
+                    names.get(i),
+                    typeName,
+                    VariableKind.fromKeyword(locality.getValue())
+            );
+            writeXML(newVar.toXML("(def)"));
+
+            if(i < names.size()-1) {
+                writeXML(new SymbolToken(-1, ","));
+            }
         }
-        write(new SymbolToken(-1, ";"));
+        writeXML(new SymbolToken(-1, ";"));
 
         indentLevel--;
-        write("</classVarDec>");
+        writeXML("</classVarDec>");
         // endregion
 
     }
@@ -257,29 +272,31 @@ public class CompilationEngine {
             throw new IllegalSyntaxException(routineType, "Invalid function type");
         }
 
+        symbolTable.startSubroutine();
+
         Token returnType = tokenizer.next();
         String returnTypeName = convertTokenToTypeName(returnType, true);
 
         IdentifierToken routineName = getTokenOrDie(IdentifierToken.class);
 
         // region GEN Subroutine open
-        write("<subroutineDec>");
+        writeXML("<subroutineDec>");
         indentLevel++;
 
-        write(routineType);
-        write(returnType);
-        write(routineName);
+        writeXML(routineType);
+        writeXML(returnType);
+        writeXML(routineName);
         // endregion
 
-        write(getSymbolOrDie('('));
+        writeXML(getSymbolOrDie('('));
         compileParameterList();
-        write(getSymbolOrDie(')'));
+        writeXML(getSymbolOrDie(')'));
 
         compileSubroutineBody();
 
         // region GEN subroutine close
         indentLevel--;
-        write("</subroutineDec>");
+        writeXML("</subroutineDec>");
         // endregion
     }
 
@@ -289,7 +306,7 @@ public class CompilationEngine {
      */
     private void compileParameterList() {
 
-        write("<parameterList>");
+        writeXML("<parameterList>");
         indentLevel++;
 
         SymbolToken nextTokenSymbol = safeCast(tokenizer.peek(), SymbolToken.class);
@@ -307,20 +324,22 @@ public class CompilationEngine {
             IdentifierToken paramName = getTokenOrDie(IdentifierToken.class);
 
             // region GEN Subroutine parameter
-            write(paramType);
-            write(paramName);
+            writeXML(paramType);
+            //writeXML(paramName);
+            Variable newVar = symbolTable.define(paramName, paramTypeName, VariableKind.ARG);
+            writeXML(newVar.toXML("(def)"));
             // endregion
 
             // Either way, the next token MUST be a symbol (either ',' or ')').
             nextTokenSymbol = peekTokenOrDie(SymbolToken.class);
             if(nextTokenSymbol.getValue() == ',') {
                 tokenizer.next();
-                write(nextTokenSymbol); // TODO Take this out later
+                writeXML(nextTokenSymbol); // TODO Take this out later
             }
         }
 
         indentLevel--;
-        write("</parameterList>");
+        writeXML("</parameterList>");
     }
 
     /**
@@ -328,9 +347,9 @@ public class CompilationEngine {
      */
     private void compileSubroutineBody() {
 
-        write("<subroutineBody>");
+        writeXML("<subroutineBody>");
         indentLevel++;
-        write(getSymbolOrDie('{'));
+        writeXML(getSymbolOrDie('{'));
 
         // First we'll need to handle any possible variable declarations
         KeywordToken nextToken = safeCast(tokenizer.peek(), KeywordToken.class);
@@ -342,9 +361,9 @@ public class CompilationEngine {
         // Now that that's done, we can get onto the rest of the subroutine
         compileStatements();
 
-        write(getSymbolOrDie('}'));
+        writeXML(getSymbolOrDie('}'));
         indentLevel--;
-        write("</subroutineBody>");
+        writeXML("</subroutineBody>");
     }
 
     /**
@@ -365,20 +384,23 @@ public class CompilationEngine {
 
         // Alright, we have everything we need now.
         // region GEN Variable declaration code
-        write("<varDec>");
+        writeXML("<varDec>");
         indentLevel++;
 
-        write(varKeyword);
-        write(varType);
-        write(names.get(0));
-        for(int i = 1; i < names.size(); i++) {
-            write(new SymbolToken(-1, ","));
-            write(names.get(i));
+        writeXML(varKeyword);
+        writeXML(varType);
+        for(int i = 0; i < names.size(); i++) {
+            Variable newVar = symbolTable.define(names.get(i).getValue(), typeName, VariableKind.VAR);
+            writeXML(newVar.toXML("(def)"));
+
+            if(i < names.size()-1) {
+                writeXML(new SymbolToken(-1, ","));
+            }
         }
-        write(new SymbolToken(-1, ";"));
+        writeXML(new SymbolToken(-1, ";"));
 
         indentLevel--;
-        write("</varDec>");
+        writeXML("</varDec>");
         // endregion
     }
 
@@ -387,7 +409,7 @@ public class CompilationEngine {
      * does not consume the '}' nor does this expect the '{'.
      */
     private void compileStatements() {
-        write("<statements>");
+        writeXML("<statements>");
         indentLevel++;
 
         // Loop until we find a '}'
@@ -395,7 +417,7 @@ public class CompilationEngine {
         SymbolToken nextTokenAsSymbol = safeCast(nextToken, SymbolToken.class);
         while(!(nextTokenAsSymbol != null && nextTokenAsSymbol.getValue() == '}')) {
 
-            //write(tokenizer.next().toXML() + " (Unsupported statement)");
+            //writeXML(tokenizer.next().toXML() + " (Unsupported statement)");
             KeywordToken keyword = peekTokenOrDie(KeywordToken.class);
             switch(keyword.getValue()) {
                 case LET:
@@ -427,14 +449,14 @@ public class CompilationEngine {
         }
 
         indentLevel--;
-        write("</statements>");
+        writeXML("</statements>");
     }
 
     private void compileDo() {
-        write("<doStatement>");
+        writeXML("<doStatement>");
         indentLevel++;
 
-        write(getKeywordOrDie(KeywordType.DO));
+        writeXML(getKeywordOrDie(KeywordType.DO));
 
         IdentifierToken firstToken = getTokenOrDie(IdentifierToken.class);
         if(peekTokenOrDie(SymbolToken.class).getValue() == '.') {
@@ -445,100 +467,102 @@ public class CompilationEngine {
             compileSubroutineCall(firstToken);
         }
 
-        write(getSymbolOrDie(';'));
+        writeXML(getSymbolOrDie(';'));
 
         indentLevel--;
-        write("</doStatement>");
+        writeXML("</doStatement>");
     }
 
     private void compileLet() {
-        write("<letStatement>");
+        writeXML("<letStatement>");
         indentLevel++;
 
-        write(getKeywordOrDie(KeywordType.LET));
+        writeXML(getKeywordOrDie(KeywordType.LET));
 
         IdentifierToken varName = getTokenOrDie(IdentifierToken.class);
-        write(varName);
+        //writeXML(varName);
+        Variable var = symbolTable.get(varName);
+        writeXML(var.toXML("(ref)"));
 
         SymbolToken symbol = peekTokenOrDie(SymbolToken.class);
         if(symbol.getValue() == '[') {
-            write(getSymbolOrDie('['));
+            writeXML(getSymbolOrDie('['));
             compileExpression();
-            write(getSymbolOrDie(']'));
+            writeXML(getSymbolOrDie(']'));
         }
-        write(getSymbolOrDie('='));
+        writeXML(getSymbolOrDie('='));
 
         compileExpression();
 
-        write(getSymbolOrDie(';'));
+        writeXML(getSymbolOrDie(';'));
 
         indentLevel--;
-        write("</letStatement>");
+        writeXML("</letStatement>");
     }
 
     private void compileWhile() {
 
-        write("<whileStatement>");
+        writeXML("<whileStatement>");
         indentLevel++;
 
-        write(getKeywordOrDie(KeywordType.WHILE));
+        writeXML(getKeywordOrDie(KeywordType.WHILE));
 
-        write(getSymbolOrDie('('));
+        writeXML(getSymbolOrDie('('));
         compileExpression();
-        write(getSymbolOrDie(')'));
+        writeXML(getSymbolOrDie(')'));
 
-        write(getSymbolOrDie('{'));
+        writeXML(getSymbolOrDie('{'));
         compileStatements();
-        write(getSymbolOrDie('}'));
+        writeXML(getSymbolOrDie('}'));
 
         indentLevel--;
-        write("</whileStatement>");
+        writeXML("</whileStatement>");
     }
 
     private void compileIf() {
 
-        write("<ifStatement>");
+        writeXML("<ifStatement>");
         indentLevel++;
 
-        write(getKeywordOrDie(KeywordType.IF));
+        writeXML(getKeywordOrDie(KeywordType.IF));
 
-        write(getSymbolOrDie('('));
+        writeXML(getSymbolOrDie('('));
         compileExpression();
-        write(getSymbolOrDie(')'));
+        writeXML(getSymbolOrDie(')'));
 
-        write(getSymbolOrDie('{'));
+        writeXML(getSymbolOrDie('{'));
         compileStatements();
-        write(getSymbolOrDie('}'));
+        writeXML(getSymbolOrDie('}'));
 
         KeywordToken elseToken = safeCast(tokenizer.peek(), KeywordToken.class);
         if(elseToken != null && elseToken.getValue() == KeywordType.ELSE) {
-            write(tokenizer.next());
+            writeXML(tokenizer.next());
 
-            write(getSymbolOrDie('{'));
+            writeXML(getSymbolOrDie('{'));
             compileStatements();
-            write(getSymbolOrDie('}'));
+            writeXML(getSymbolOrDie('}'));
         }
 
         indentLevel--;
-        write("</ifStatement>");
+        writeXML("</ifStatement>");
     }
 
     private void compileReturn() {
 
-        write("<returnStatement>");
+        writeXML("<returnStatement>");
         indentLevel++;
 
-        write(getKeywordOrDie(KeywordType.RETURN));
+        writeXML(getKeywordOrDie(KeywordType.RETURN));
 
         SymbolToken symbol = safeCast(tokenizer.peek(), SymbolToken.class);
         if(!(symbol != null && symbol.getValue() == ';')) {
             compileExpression();
         }
 
-        write(getSymbolOrDie(';'));
+        writeXML(getSymbolOrDie(';'));
 
         indentLevel--;
-        write("</returnStatement>");
+        writeXML("</returnStatement>");
     }
 
 
@@ -552,25 +576,25 @@ public class CompilationEngine {
         // Note that unary operands are treated as a part of the term,
         // so we don't need to worry about those.
 
-        write("<expression>");
+        writeXML("<expression>");
         indentLevel++;
 
         compileTerm();
 
         SymbolToken symbolAfterToken = safeCast(tokenizer.peek(), SymbolToken.class);
         while(symbolAfterToken != null && symbolAfterToken.isBinaryOp() ) {
-            write(tokenizer.next());
+            writeXML(tokenizer.next());
             compileTerm();
 
             symbolAfterToken = safeCast(tokenizer.peek(), SymbolToken.class);
         }
 
         indentLevel--;
-        write("</expression>");
+        writeXML("</expression>");
     }
 
     private void compileTerm() {
-        write("<term>");
+        writeXML("<term>");
         indentLevel++;
 
         Token termToken = tokenizer.next();
@@ -582,26 +606,26 @@ public class CompilationEngine {
         IdentifierToken    identifier       = safeCast(termToken, IdentifierToken.class);
 
         if(intLiteral != null) {
-            write(intLiteral);
+            writeXML(intLiteral);
         }
         else if(stringLiteral != null) {
-            write(stringLiteral);
+            writeXML(stringLiteral);
         }
         else if(keyword != null && keyword.isConst()) {
-            write(keyword);
+            writeXML(keyword);
         }
         else if(symbol != null) {
             // A symbol means one of two things:
             //  1. UNARY_OP term
             //  2. (expression)
             if(symbol.isUnaryOp()) {
-                write(symbol);
+                writeXML(symbol);
                 compileTerm();
             }
             else if(symbol.getValue() == '(') {
-                write(symbol);
+                writeXML(symbol);
                 compileExpression();
-                write(getSymbolOrDie(')'));
+                writeXML(getSymbolOrDie(')'));
             }
             else {
                 throw new IllegalSyntaxException(symbol, "Unexpected symbol: " + symbol);
@@ -631,10 +655,12 @@ public class CompilationEngine {
 
                 switch(nextSymbol.getValue()) {
                     case '[':
-                        write(identifier);
-                        write(getSymbolOrDie('['));
+                        //writeXML(identifier);
+                        Variable var = symbolTable.get(identifier);
+                        writeXML(var.toXML("(ref)"));
+                        writeXML(getSymbolOrDie('['));
                         compileExpression();
-                        write(getSymbolOrDie(']'));
+                        writeXML(getSymbolOrDie(']'));
                         break;
 
                     case '.':
@@ -653,7 +679,9 @@ public class CompilationEngine {
             }
 
             if(!handledTerm) {
-                write(identifier);
+                //writeXML(identifier);
+                Variable var = symbolTable.get(identifier);
+                writeXML(var.toXML("(ref)"));
             }
         }
         else {
@@ -661,7 +689,7 @@ public class CompilationEngine {
         }
 
         indentLevel--;
-        write("</term>");
+        writeXML("</term>");
     }
 
     /**
@@ -671,7 +699,7 @@ public class CompilationEngine {
      */
     private void compileExpressionList() {
 
-        write("<expressionList>");
+        writeXML("<expressionList>");
         indentLevel++;
 
         SymbolToken symbol = safeCast(tokenizer.peek(), SymbolToken.class);
@@ -684,7 +712,7 @@ public class CompilationEngine {
             // (and this can repeat many times), or a close parenthesis.
             symbol = peekTokenOrDie(SymbolToken.class);
             while(symbol.getValue() == ',') {
-                write(tokenizer.next());    // Write the ','
+                writeXML(tokenizer.next());    // Write the ','
                 compileExpression();
 
                 symbol = peekTokenOrDie(SymbolToken.class);
@@ -692,7 +720,7 @@ public class CompilationEngine {
         }
 
         indentLevel--;
-        write("</expressionList>");
+        writeXML("</expressionList>");
     }
 
     private void compileSubroutineCall(IdentifierToken subroutineName) {
@@ -721,14 +749,14 @@ public class CompilationEngine {
         // Note that, in our XML format, there is no "subroutineCall" block,
         // so we can just spew our code out.
         if(objName != null) {
-            write(objName);
-            write(new SymbolToken(objName.getLineNumber(), "."));
+            writeXML(objName.toXML(" (class)"));
+            writeXML(new SymbolToken(objName.getLineNumber(), "."));
         }
-        write(subroutineName);
+        writeXML(subroutineName.toXML(" (subroutine)"));
 
-        write(getSymbolOrDie('('));
+        writeXML(getSymbolOrDie('('));
         compileExpressionList();
-        write(getSymbolOrDie(')'));
+        writeXML(getSymbolOrDie(')'));
         // endregion
     }
 

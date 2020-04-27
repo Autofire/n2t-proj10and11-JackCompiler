@@ -34,7 +34,11 @@ public class IdentifierToken extends AbstractToken {
 
     @Override
     public String toXML() {
-        return "<identifier> " + identifier + " </identifier>";
+        return toXML("");
+    }
+
+    public String toXML(String note) {
+        return "<identifier> " + identifier + note + " </identifier>";
     }
 
 }
