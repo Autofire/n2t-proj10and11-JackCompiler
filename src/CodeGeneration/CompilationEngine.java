@@ -256,6 +256,11 @@ public class CompilationEngine {
             throw new IllegalSyntaxException(routineType, "Invalid function type");
         }
 
+        if(routineType.getValue() == KeywordType.METHOD) {
+            symbolTable.define("this", className, VariableKind.ARG);
+        }
+
+
         Token returnType = tokenizer.next();
         String returnTypeName = convertTokenToTypeName(returnType, true);
 
@@ -289,6 +294,22 @@ public class CompilationEngine {
                 className + "." + routineName.getValue(),
                 symbolTable.varCount(VariableKind.VAR)
         );
+
+        // In the case of constructors, we need to allocate space for the object
+        // and then also align the THIS segment.
+        if(routineType.getValue() == KeywordType.CONSTRUCTOR) {
+            vmWriter.writePush(Segment.CONSTANT, symbolTable.varCount(VariableKind.FIELD));
+            vmWriter.writeCall("Memory.alloc", 1);
+
+            vmWriter.writePop(Segment.POINTER, 0);
+        }
+        else if(routineType.getValue() == KeywordType.METHOD) {
+            // All method calls implicitly get the THIS pointer passed in as the
+            // first argument. Thus, we need to offset all future arguments
+            // by one. Also, we need to align the THIS segment appropriately.
+            vmWriter.writePush(Segment.ARGUMENT, 0);
+            vmWriter.writePop(Segment.POINTER, 0);
+        }
 
         // Now that that's done, we can get onto the rest of the subroutine
         compileStatements();
@@ -642,8 +663,8 @@ public class CompilationEngine {
                     vmWriter.writeArithmetic(ArithmeticCommand.NEG);
                     break;
                 case THIS:
-                    // TODO Support the THIS keyword
-                    throw new UnsupportedOperationException("Support for THIS will be added later");
+                    vmWriter.writePush(Segment.POINTER, 0);
+                    break;
                 default:
                     throw new IllegalArgumentException("Unsupported const keyword " + keyword);
             }
@@ -764,32 +785,90 @@ public class CompilationEngine {
      */
     private void compileSubroutineCall(IdentifierToken objToken, IdentifierToken subroutineToken) {
 
+        // TODO This function is a hot mess now
+
         // We need to push things onto the stack, and then we can do the
         // call. However, we generate the XML first, so the order is a
         // little iffy.
         String subroutineName;
 
+        Variable objVar = null;
+        int argCount = 0;
+        boolean isMethod = false;
+
         // Note that, in our XML format, there is no "subroutineCall" block,
         // so we can just spew our code out.
         if(objToken != null) {
-            // TODO The first term could very well be an object, not a class. CHECK FOR THIS
             writeXML(objToken.toXML(" (class)"));
             writeXML(new SymbolToken(objToken.getLineNumber(), "."));
             writeXML(subroutineToken.toXML(" (subroutine)"));
 
-            subroutineName = objToken.getValue() + "." + subroutineToken.getValue();
+
+            objVar = symbolTable.get(objToken);
+
+            // If we found a variable in the symbol table that matches the object,
+            // we know we're calling a method and not a function. Thus, we need
+            // to push the method's pointer onto the stack as the first argument.
+            if(objVar != null) {
+                // The name of the method is based on the class, so we
+                // need to make sure the call is going from that.
+                subroutineName = objVar.getType() + "." + subroutineToken.getValue();
+
+                // But before we push the object's pointer onto the stack, we need
+                // to save our OWN pointer, since it'll get overwritten.
+                vmWriter.writePush(Segment.POINTER, 0);
+                vmWriter.writePush(Segment.fromVariableKind(objVar.getKind()), objVar.getIndex());
+
+                isMethod = true;
+            }
+            else {
+                // We're calling a function, so we can just use the objectToken
+                // directly.
+                subroutineName = objToken.getValue() + "." + subroutineToken.getValue();
+            }
         }
         else {
             writeXML(subroutineToken.toXML(" (subroutine)"));
 
-            subroutineName = subroutineToken.getValue();
+            // If there is no previous object name, then we know it's
+            // a local variable.
+            subroutineName = className + "." + subroutineToken.getValue();
+
+            // Ok, we're calling a method in our own object, but it'll
+            // still want to know which object we're calling it from.
+            // Thus, we still need to put our own pointer on the stack.
+            vmWriter.writePush(Segment.POINTER, 0);
+
+            isMethod = true;
         }
 
+
+        if(isMethod) {
+            // Also we have one extra arg so this needs to get incremented!
+            argCount++;
+        }
+
+
         writeXML(getSymbolOrDie('('));
-        int argCount = compileExpressionList();
+        argCount += compileExpressionList();
         writeXML(getSymbolOrDie(')'));
 
         vmWriter.writeCall(subroutineName, argCount);
+
+        // If we did just complete a method call (IN ANOTHER OBJECT),
+        // we'll need to restore the THIS segment back to where it
+        // was before. Now this is a bit of a pain because it's
+        // buried under the return value.
+        if(objVar != null) {
+            // We'll want to get the return value out of the way.
+            vmWriter.writePop(Segment.TEMP, 0);
+
+            // Now we can restore the THIS address.
+            vmWriter.writePop(Segment.POINTER, 0);
+
+            // And now we can put the return value back on the stack.
+            vmWriter.writePush(Segment.TEMP, 0);
+        }
     }
 
     /**
