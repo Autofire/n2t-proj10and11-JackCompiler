@@ -594,7 +594,17 @@ public class CompilationEngine {
         }
         else if(stringLiteral != null) {
             writeXML(stringLiteral);
-            // TODO
+
+            String targetStr = stringLiteral.getValue();
+
+            vmWriter.writePush(Segment.CONSTANT, targetStr.length());
+            vmWriter.writeCall("String.new", 1);
+
+            for(int i = 0; i < targetStr.length(); i++) {
+                vmWriter.writePush(Segment.CONSTANT, (int)targetStr.charAt(i));
+                vmWriter.writeCall("String.appendChar", 2);
+            }
+
         }
         else if(keyword != null && keyword.isConst()) {
             writeXML(keyword);
