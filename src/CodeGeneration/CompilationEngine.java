@@ -20,17 +20,39 @@ public class CompilationEngine {
     private JackTokenizer tokenizer;
     private VMWriter vmWriter;
     private PrintStream xmlWriter;
-    private VariableTable symbolTable;
+    private VariableTable symbolTable = new VariableTable();
 
+    /**
+     * This is the name of the class. Used when declaring subroutines and labels.
+     */
     private String className;
 
+    /**
+     * The number of labels so far. This is used to ensure that we always get a unique label.
+     */
+    private int labelCount = 0;
+
     public CompilationEngine(BufferedReader reader, PrintStream vmWriter, PrintStream xmlWriter) {
-        //this.reader = reader;
         tokenizer = new JackTokenizer(reader);
         this.vmWriter = new VMWriter(vmWriter);
         this.xmlWriter = xmlWriter;
-        symbolTable = new VariableTable();
     }
+
+    // region Labels
+    private String getLabel() {
+        return getLabel("");
+    }
+
+    private String getLabel(String postfix) {
+        String result = String.join(
+                "_", "_", className, Integer.toString(labelCount), postfix
+        );
+
+        labelCount++;
+
+        return result;
+    }
+    // endregion
 
     // region XML
     private final static String INDENT = "  ";
@@ -250,25 +272,6 @@ public class CompilationEngine {
         compileParameterList();
         writeXML(getSymbolOrDie(')'));
 
-        // At this point, the symbol table knows the number of parameters we have.
-        // Thus, we can go ask it when we load construct the VM function definition.
-        vmWriter.writeFunction(
-                className + "." + routineName.getValue(),
-                symbolTable.varCount(VariableKind.ARG)
-        );
-
-        compileSubroutineBody();
-
-        indentLevel--;
-        writeXML("</subroutineDec>");
-    }
-
-
-    /**
-     * This consumes both the '{' and '}' tokens.
-     */
-    private void compileSubroutineBody() {
-
         writeXML("<subroutineBody>");
         indentLevel++;
         writeXML(getSymbolOrDie('{'));
@@ -280,13 +283,25 @@ public class CompilationEngine {
             nextToken = safeCast(tokenizer.peek(), KeywordToken.class);
         }
 
+        // At this point, the symbol table knows the number of local variables we have.
+        // Thus, we can go ask it when we load construct the VM function definition.
+        vmWriter.writeFunction(
+                className + "." + routineName.getValue(),
+                symbolTable.varCount(VariableKind.VAR)
+        );
+
         // Now that that's done, we can get onto the rest of the subroutine
         compileStatements();
 
         writeXML(getSymbolOrDie('}'));
         indentLevel--;
         writeXML("</subroutineBody>");
+
+        indentLevel--;
+        writeXML("</subroutineDec>");
     }
+
+
     // endregion
 
     // region Statement compilation
@@ -364,6 +379,7 @@ public class CompilationEngine {
     }
 
     private void compileLet() {
+
         writeXML("<letStatement>");
         indentLevel++;
 
@@ -384,6 +400,10 @@ public class CompilationEngine {
 
         compileExpression();
 
+        // Now the value to push is sitting on the stack... we can store it.
+        // TODO Handle array offset
+        vmWriter.writePop(Segment.fromVariableKind(var.getKind()), var.getIndex());
+
         writeXML(getSymbolOrDie(';'));
 
         indentLevel--;
@@ -392,8 +412,14 @@ public class CompilationEngine {
 
     private void compileWhile() {
 
+        String baseLabel = getLabel();
+        String whileStart = baseLabel + "WHILE-START";
+        String whileEnd = baseLabel + "WHILE-END";
+
         writeXML("<whileStatement>");
         indentLevel++;
+
+        vmWriter.writeLabel(whileStart);
 
         writeXML(getKeywordOrDie(KeywordType.WHILE));
 
@@ -401,15 +427,30 @@ public class CompilationEngine {
         compileExpression();
         writeXML(getSymbolOrDie(')'));
 
+        // We want to make the jump to the end if the while condition is false.
+        // Thus, we'll have to perform a NOT before we do the if-goto
+        vmWriter.writeArithmetic(ArithmeticCommand.NOT);
+        vmWriter.writeIf(whileEnd);
+
         writeXML(getSymbolOrDie('{'));
         compileStatements();
         writeXML(getSymbolOrDie('}'));
+
+        // Now that we've gone through the contents of the while loop,
+        // we'll want to go back to the start. And being the end of the loop,
+        // the end label comes right after.
+        vmWriter.writeGoto(whileStart);
+        vmWriter.writeLabel(whileEnd);
 
         indentLevel--;
         writeXML("</whileStatement>");
     }
 
     private void compileIf() {
+
+        String baseLabel = getLabel();
+        String endBranch1 = baseLabel + "END-IF";
+        String endBranch2 = baseLabel + "END-ELSE";
 
         writeXML("<ifStatement>");
         indentLevel++;
@@ -420,9 +461,22 @@ public class CompilationEngine {
         compileExpression();
         writeXML(getSymbolOrDie(')'));
 
+        // So we have the result of the expression within the "if" statement.
+        // Now to see if we jump. Note, however, that we want to jump past
+        // the first portion of code ONLY IF the result of the expression is
+        // false.
+        vmWriter.writeArithmetic(ArithmeticCommand.NOT);
+        vmWriter.writeIf(endBranch1);
+
         writeXML(getSymbolOrDie('{'));
         compileStatements();
         writeXML(getSymbolOrDie('}'));
+
+        // It's much simpler to assume that we have an else, and then
+        // always make that jump. In other words, that label always exists
+        // even if we have no else branch.
+        vmWriter.writeGoto(endBranch2);
+        vmWriter.writeLabel(endBranch1);
 
         KeywordToken elseToken = safeCast(tokenizer.peek(), KeywordToken.class);
         if(elseToken != null && elseToken.getValue() == KeywordType.ELSE) {
@@ -432,6 +486,10 @@ public class CompilationEngine {
             compileStatements();
             writeXML(getSymbolOrDie('}'));
         }
+
+        // Again, due to our assumption above, this always exists even if
+        // it technically doesn't need to sometimes.
+        vmWriter.writeLabel(endBranch2);
 
         indentLevel--;
         writeXML("</ifStatement>");
@@ -536,9 +594,25 @@ public class CompilationEngine {
         }
         else if(stringLiteral != null) {
             writeXML(stringLiteral);
+            // TODO
         }
         else if(keyword != null && keyword.isConst()) {
             writeXML(keyword);
+            switch(keyword.getValue()) {
+                case NULL:
+                case FALSE:
+                    vmWriter.writePush(Segment.CONSTANT, 0);
+                    break;
+                case TRUE:
+                    vmWriter.writePush(Segment.CONSTANT, 1);
+                    vmWriter.writeArithmetic(ArithmeticCommand.NEG);
+                    break;
+                case THIS:
+                    // TODO Support the THIS keyword
+                    throw new UnsupportedOperationException("Support for THIS will be added later");
+                default:
+                    throw new IllegalArgumentException("Unsupported const keyword " + keyword);
+            }
         }
         else if(symbol != null) {
             // A symbol means one of two things:
@@ -547,6 +621,7 @@ public class CompilationEngine {
             if(symbol.isUnaryOp()) {
                 writeXML(symbol);
                 compileTerm();
+                vmWriter.writeArithmetic(ArithmeticCommand.fromUnarySymbol(symbol));
             }
             else if(symbol.getValue() == '(') {
                 writeXML(symbol);
@@ -587,6 +662,7 @@ public class CompilationEngine {
                         writeXML(getSymbolOrDie('['));
                         compileExpression();
                         writeXML(getSymbolOrDie(']'));
+                        // TODO Handle array notation
                         break;
 
                     case '.':
@@ -596,7 +672,7 @@ public class CompilationEngine {
                         break;
 
                     case '(':
-                        compileSubroutineCall( identifier);
+                        compileSubroutineCall( identifier );
                         break;
 
                     default:
@@ -608,6 +684,8 @@ public class CompilationEngine {
                 //writeXML(identifier);
                 Variable var = symbolTable.get(identifier);
                 writeXML(var.toXML("(ref)"));
+
+                vmWriter.writePush(Segment.fromVariableKind(var.getKind()), var.getIndex());
             }
         }
         else {
