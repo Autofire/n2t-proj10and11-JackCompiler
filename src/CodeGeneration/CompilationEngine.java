@@ -1,4 +1,8 @@
 package CodeGeneration;
+//  Author: Daniel Edwards
+//   Class: CS 3650 (Section 1)
+// Project: 10 & 11
+//     Due: 04/29/2020
 
 import CodeGeneration.VM.ArithmeticCommand;
 import CodeGeneration.VM.Segment;
@@ -785,8 +789,6 @@ public class CompilationEngine {
      */
     private void compileSubroutineCall(IdentifierToken objToken, IdentifierToken subroutineToken) {
 
-        // TODO This function is a hot mess now
-
         // We need to push things onto the stack, and then we can do the
         // call. However, we generate the XML first, so the order is a
         // little iffy.
@@ -801,8 +803,6 @@ public class CompilationEngine {
         if(objToken != null) {
             writeXML(objToken.toXML(" (class)"));
             writeXML(new SymbolToken(objToken.getLineNumber(), "."));
-            writeXML(subroutineToken.toXML(" (subroutine)"));
-
 
             objVar = symbolTable.get(objToken);
 
@@ -828,10 +828,9 @@ public class CompilationEngine {
             }
         }
         else {
-            writeXML(subroutineToken.toXML(" (subroutine)"));
 
             // If there is no previous object name, then we know it's
-            // a local variable.
+            // a local method.
             subroutineName = className + "." + subroutineToken.getValue();
 
             // Ok, we're calling a method in our own object, but it'll
@@ -842,6 +841,7 @@ public class CompilationEngine {
             isMethod = true;
         }
 
+        writeXML(subroutineToken.toXML(" (subroutine)"));
 
         if(isMethod) {
             // Also we have one extra arg so this needs to get incremented!

@@ -1,3 +1,8 @@
+//  Author: Daniel Edwards
+//   Class: CS 3650 (Section 1)
+// Project: 10 & 11
+//     Due: 04/29/2020
+
 import SyntaxAnalysis.JackAnalyzer;
 import SyntaxAnalysis.JackTokenizer;
 import SyntaxAnalysis.Tokens.*;
@@ -26,35 +31,6 @@ public class JackCompiler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        /*
-        String targetFileName;
-        String outputFileName;
-
-        if(rawTargetArg.endsWith(".jack")) {
-            targetFileName = rawTargetArg;
-            outputFileName = rawTargetArg.replace(".jack", "C.xml");
-        }
-        else {
-            throw new IllegalArgumentException("Directories not supported");
-        }
-
-        System.out.println("Opening " + targetFileName);
-        System.out.println("Writing to " + outputFileName);
-
-        try(BufferedReader reader = new BufferedReader(new FileReader(targetFileName))) {
-            JackTokenizer tokenizer = new JackTokenizer(reader);
-
-            while(tokenizer.hasMoreTokens()) {
-                System.out.println(tokenizer.next().toXML());
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         */
 
     }
 }
