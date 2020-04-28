@@ -380,6 +380,8 @@ public class CompilationEngine {
 
     private void compileLet() {
 
+        boolean isArray = false;
+
         writeXML("<letStatement>");
         indentLevel++;
 
@@ -395,14 +397,36 @@ public class CompilationEngine {
             writeXML(getSymbolOrDie('['));
             compileExpression();
             writeXML(getSymbolOrDie(']'));
+
+            isArray = true;
         }
         writeXML(getSymbolOrDie('='));
 
         compileExpression();
 
-        // Now the value to push is sitting on the stack... we can store it.
-        // TODO Handle array offset
-        vmWriter.writePop(Segment.fromVariableKind(var.getKind()), var.getIndex());
+        if(!isArray) {
+            // Now the value to push is sitting on the stack... we can store it.
+            vmWriter.writePop(Segment.fromVariableKind(var.getKind()), var.getIndex());
+        }
+        else {
+            // Well this is annoying... now at this point, we have the array index
+            // UNDER the value we want to store. We'll need to temporarily save it.
+            vmWriter.writePop(Segment.TEMP, 0);
+
+            // Ok, now the array offset is on the top. Thus, we can calculate the
+            // target address we want to store the value at.
+            vmWriter.writePush(Segment.fromVariableKind(var.getKind()), var.getIndex());
+            vmWriter.writeArithmetic(ArithmeticCommand.ADD);
+
+            // Now we'll adjust the THAT segment to point where at our target address.
+            vmWriter.writePop(Segment.POINTER, 1);
+
+            // Ok, now that everything is aligned, we can restore the value we
+            // saved in TEMP and then store it.
+            vmWriter.writePush(Segment.TEMP, 0);
+            vmWriter.writePop(Segment.THAT, 0);
+
+        }
 
         writeXML(getSymbolOrDie(';'));
 
@@ -666,13 +690,23 @@ public class CompilationEngine {
 
                 switch(nextSymbol.getValue()) {
                     case '[':
-                        //writeXML(identifier);
+                        // Get the base array address
                         Variable var = symbolTable.get(identifier);
+                        vmWriter.writePush(Segment.fromVariableKind(var.getKind()), var.getIndex());
                         writeXML(var.toXML("(ref)"));
+
                         writeXML(getSymbolOrDie('['));
                         compileExpression();
                         writeXML(getSymbolOrDie(']'));
-                        // TODO Handle array notation
+
+                        // Now that we have the offset within the square brackets, we can
+                        // calculate the desired address with a simple add.
+                        vmWriter.writeArithmetic(ArithmeticCommand.ADD);
+
+                        // Align the THAT segment based on the calculated offset and then
+                        // fetch that value.
+                        vmWriter.writePop(Segment.POINTER, 1);
+                        vmWriter.writePush(Segment.THAT, 0);
                         break;
 
                     case '.':
