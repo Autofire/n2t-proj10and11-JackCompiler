@@ -14,7 +14,7 @@ public enum VariableKind {
         switch(keyword) {
             case STATIC: return STATIC;
             case FIELD:  return FIELD;
-            //case ARG:  return ARG;
+            //case ARGUMENT:  return ARGUMENT;
             case VAR:    return VAR;
             default:
                 throw new IllegalArgumentException(

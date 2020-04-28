@@ -1,5 +1,8 @@
 package CodeGeneration;
 
+import CodeGeneration.VM.ArithmeticCommand;
+import CodeGeneration.VM.Segment;
+import CodeGeneration.VM.VMWriter;
 import CodeGeneration.VariableTracking.Variable;
 import CodeGeneration.VariableTracking.VariableKind;
 import CodeGeneration.VariableTracking.VariableTable;
@@ -14,44 +17,24 @@ import java.util.List;
 
 public class CompilationEngine {
 
-    //private BufferedReader reader;
     private JackTokenizer tokenizer;
+    private VMWriter vmWriter;
     private PrintStream xmlWriter;
     private VariableTable symbolTable;
 
-    private final static String INDENT = "  ";
-    private int indentLevel = 0;
+    private String className;
 
-    public CompilationEngine(BufferedReader reader, PrintStream xmlWriter) {
+    public CompilationEngine(BufferedReader reader, PrintStream vmWriter, PrintStream xmlWriter) {
         //this.reader = reader;
         tokenizer = new JackTokenizer(reader);
+        this.vmWriter = new VMWriter(vmWriter);
         this.xmlWriter = xmlWriter;
         symbolTable = new VariableTable();
     }
 
-    public void compile() {
-        // According to the Jack specs, every file must have exactly
-        // one class. Thus, we'll make the specific assumption that
-        // the first tokens are for a class definition.
-        compileClass();
-
-        // Each file is supposed to be exactly one class, so if
-        // we're done compiling the class and there's more tokens,
-        // something's wrong.
-        if(tokenizer.hasMoreTokens()) {
-            throw new IllegalSyntaxException( tokenizer.getLineNumber(), "Found symbols after class definition" );
-        }
-    }
-
-    private String getIndent() {
-        StringBuilder sb = new StringBuilder();
-
-        for(int i = 0; i < indentLevel; i++) {
-            sb.append(INDENT);
-        }
-
-        return sb.toString();
-    }
+    // region XML
+    private final static String INDENT = "  ";
+    private int indentLevel = 0;
 
     /**
      * Writes XML to the file. This is indented based indentLevel.
@@ -59,7 +42,13 @@ public class CompilationEngine {
      */
     private void writeXML(String value) {
         if(xmlWriter != null) {
-            xmlWriter.print(getIndent());
+            StringBuilder sb = new StringBuilder();
+
+            for(int i = 0; i < indentLevel; i++) {
+                sb.append(INDENT);
+            }
+
+            xmlWriter.print(sb.toString());
             xmlWriter.println(value);
         }
     }
@@ -71,7 +60,9 @@ public class CompilationEngine {
     private void writeXML(Token t) {
         writeXML(t.toXML());
     }
+    // endregion
 
+    // region Casting and requiring
     private static <T> T safeCast(Token token, Class<T> type) {
         return (type.isInstance(token) ? (T) token : null);
     }
@@ -157,21 +148,36 @@ public class CompilationEngine {
 
         return typeName;
     }
+    // endregion
 
+    public void compile() {
+        // According to the Jack specs, every file must have exactly
+        // one class. Thus, we'll make the specific assumption that
+        // the first tokens are for a class definition.
+        compileClass();
+
+        // Each file is supposed to be exactly one class, so if
+        // we're done compiling the class and there's more tokens,
+        // something's wrong.
+        if(tokenizer.hasMoreTokens()) {
+            throw new IllegalSyntaxException( tokenizer.getLineNumber(), "Found symbols after class definition" );
+        }
+    }
+
+    // region Class compilation
     private void compileClass() {
-        // Get tokens
-        KeywordToken classToken = getKeywordOrDie(KeywordType.CLASS);
-        IdentifierToken className = getTokenOrDie(IdentifierToken.class);
-        SymbolToken openCurly = getSymbolOrDie('{');
-
-        //region GEN Opening class code
         writeXML("<class>");
         indentLevel++;
 
-        writeXML(classToken);
-        writeXML(className);
-        writeXML(openCurly);
-        //endregion
+        // Get tokens
+        writeXML(getKeywordOrDie(KeywordType.CLASS));
+
+        IdentifierToken classNameToken = getTokenOrDie(IdentifierToken.class);
+        writeXML(classNameToken);
+
+        writeXML(getSymbolOrDie('{'));
+
+        className = classNameToken.getValue();
 
         boolean done = false;
         while(!done && tokenizer.hasMoreTokens()) {
@@ -181,13 +187,11 @@ public class CompilationEngine {
 
             if(symbol != null && symbol.getValue() == '}') {
 
-                //region GEN Closing class code
                 tokenizer.next();
                 writeXML(nextToken);
 
                 indentLevel--;
                 writeXML("</class>");
-                //endregion
 
                 done = true;
             }
@@ -216,54 +220,12 @@ public class CompilationEngine {
         }
 
     }
+    // endregion
 
-    private void compileClassVarDec() {
-        // Figure out the locality.
-        KeywordToken locality = getTokenOrDie(KeywordToken.class);
-        if(locality.getValue() != KeywordType.STATIC && locality.getValue() != KeywordType.FIELD) {
-            throw new IllegalSyntaxException(
-                    locality,
-                    "Class variable declarations must be 'static' or 'field'"
-            );
-        }
-
-        // Next, figure out the type.
-        Token varType = tokenizer.next();
-        String typeName = convertTokenToTypeName(varType, false);
-
-        // Get every single variable name.
-        List<IdentifierToken> names = parseVarDecList();
-
-        // Alright, we have everything we need now.
-        // region GEN Variable declaration code
-        writeXML("<classVarDec>");
-        indentLevel++;
-
-        writeXML(locality);
-        writeXML(varType);
-        //writeXML(names.get(0));
-        for(int i = 0; i < names.size(); i++) {
-            //writeXML(names.get(i));
-            Variable newVar = symbolTable.define(
-                    names.get(i),
-                    typeName,
-                    VariableKind.fromKeyword(locality.getValue())
-            );
-            writeXML(newVar.toXML("(def)"));
-
-            if(i < names.size()-1) {
-                writeXML(new SymbolToken(-1, ","));
-            }
-        }
-        writeXML(new SymbolToken(-1, ";"));
-
-        indentLevel--;
-        writeXML("</classVarDec>");
-        // endregion
-
-    }
-
+    // region Subroutine compilation
     private void compileSubroutine() {
+        symbolTable.startSubroutine();
+
         KeywordToken routineType = getTokenOrDie(KeywordToken.class);
         if (routineType.getValue() != KeywordType.CONSTRUCTOR &&
             routineType.getValue() != KeywordType.FUNCTION &&
@@ -272,75 +234,35 @@ public class CompilationEngine {
             throw new IllegalSyntaxException(routineType, "Invalid function type");
         }
 
-        symbolTable.startSubroutine();
-
         Token returnType = tokenizer.next();
         String returnTypeName = convertTokenToTypeName(returnType, true);
 
         IdentifierToken routineName = getTokenOrDie(IdentifierToken.class);
 
-        // region GEN Subroutine open
         writeXML("<subroutineDec>");
         indentLevel++;
 
         writeXML(routineType);
         writeXML(returnType);
         writeXML(routineName);
-        // endregion
 
         writeXML(getSymbolOrDie('('));
         compileParameterList();
         writeXML(getSymbolOrDie(')'));
 
+        // At this point, the symbol table knows the number of parameters we have.
+        // Thus, we can go ask it when we load construct the VM function definition.
+        vmWriter.writeFunction(
+                className + "." + routineName.getValue(),
+                symbolTable.varCount(VariableKind.ARG)
+        );
+
         compileSubroutineBody();
 
-        // region GEN subroutine close
         indentLevel--;
         writeXML("</subroutineDec>");
-        // endregion
     }
 
-    /**
-     * This ends upon seeing ')' but it does not consume it. This also
-     * assumes that the opening '(' has already been consumed.
-     */
-    private void compileParameterList() {
-
-        writeXML("<parameterList>");
-        indentLevel++;
-
-        SymbolToken nextTokenSymbol = safeCast(tokenizer.peek(), SymbolToken.class);
-
-        // Loop until we see ')'
-        while(nextTokenSymbol == null || nextTokenSymbol.getValue() != ')') {
-
-            // There are two possible scenarios here:
-            //  1. paramType paramName,
-            //  2. paramType paramName)
-            //
-            // We want to consume commas and leave parenthesis.
-            Token paramType = tokenizer.next();
-            String paramTypeName = convertTokenToTypeName(paramType, false);
-            IdentifierToken paramName = getTokenOrDie(IdentifierToken.class);
-
-            // region GEN Subroutine parameter
-            writeXML(paramType);
-            //writeXML(paramName);
-            Variable newVar = symbolTable.define(paramName, paramTypeName, VariableKind.ARG);
-            writeXML(newVar.toXML("(def)"));
-            // endregion
-
-            // Either way, the next token MUST be a symbol (either ',' or ')').
-            nextTokenSymbol = peekTokenOrDie(SymbolToken.class);
-            if(nextTokenSymbol.getValue() == ',') {
-                tokenizer.next();
-                writeXML(nextTokenSymbol); // TODO Take this out later
-            }
-        }
-
-        indentLevel--;
-        writeXML("</parameterList>");
-    }
 
     /**
      * This consumes both the '{' and '}' tokens.
@@ -365,45 +287,9 @@ public class CompilationEngine {
         indentLevel--;
         writeXML("</subroutineBody>");
     }
+    // endregion
 
-    /**
-     * Takes any variable declarations, and continues until a ';' is encountered.
-     * This consumes the entire statement, including the ';' at the end.
-     */
-    private void compileVarDec() {
-
-        // Ensure we have the var keyword.
-        KeywordToken varKeyword = getKeywordOrDie(KeywordType.VAR);
-
-        // Next, figure out the type.
-        Token varType = tokenizer.next();
-        String typeName = convertTokenToTypeName(varType, false);
-
-        // Get every single variable name.
-        List<IdentifierToken> names = parseVarDecList();
-
-        // Alright, we have everything we need now.
-        // region GEN Variable declaration code
-        writeXML("<varDec>");
-        indentLevel++;
-
-        writeXML(varKeyword);
-        writeXML(varType);
-        for(int i = 0; i < names.size(); i++) {
-            Variable newVar = symbolTable.define(names.get(i).getValue(), typeName, VariableKind.VAR);
-            writeXML(newVar.toXML("(def)"));
-
-            if(i < names.size()-1) {
-                writeXML(new SymbolToken(-1, ","));
-            }
-        }
-        writeXML(new SymbolToken(-1, ";"));
-
-        indentLevel--;
-        writeXML("</varDec>");
-        // endregion
-    }
-
+    // region Statement compilation
     /**
      * Runs through statements until a '}' is encountered. Note that this
      * does not consume the '}' nor does this expect the '{'.
@@ -466,6 +352,10 @@ public class CompilationEngine {
         else {
             compileSubroutineCall(firstToken);
         }
+
+        // All functions return something, even void functions. However,
+        // we discard anything that comes out of a 'Do' call.
+        vmWriter.writePop(Segment.TEMP, 0);
 
         writeXML(getSymbolOrDie(';'));
 
@@ -556,16 +446,24 @@ public class CompilationEngine {
 
         SymbolToken symbol = safeCast(tokenizer.peek(), SymbolToken.class);
         if(!(symbol != null && symbol.getValue() == ';')) {
+            // This will leave the appropriate return value sitting
+            // on the stack.
             compileExpression();
         }
+        else {
+            // Even for void functions, we return a 0.
+            vmWriter.writePush(Segment.CONSTANT, 0);
+        }
+        vmWriter.writeReturn();
 
         writeXML(getSymbolOrDie(';'));
 
         indentLevel--;
         writeXML("</returnStatement>");
     }
+    // endregion
 
-
+    // region Expression and term compilation
     /**
      * This continues through terms until it encounters something
      * which is NOT a binary operator symbol. It will not consume
@@ -579,12 +477,39 @@ public class CompilationEngine {
         writeXML("<expression>");
         indentLevel++;
 
+        // We're making a hard assumption that there's at least one
+        // term, because whenever an expression is expected, there's
+        // gotta be at least one of these.
         compileTerm();
 
         SymbolToken symbolAfterToken = safeCast(tokenizer.peek(), SymbolToken.class);
         while(symbolAfterToken != null && symbolAfterToken.isBinaryOp() ) {
-            writeXML(tokenizer.next());
+            //writeXML(tokenizer.next());
+
+            // First, we'll yoink (and write XML for) the binary operator
+            // that we've detected. However, we cannot act on it until we
+            // determine the result of the term on the other side.
+            SymbolToken operatorToken = getTokenOrDie(SymbolToken.class);
+            writeXML(operatorToken);
+
+            // So now that we have the symbol out of the way, let's figure
+            // out what the other operand is. This will leave it sitting
+            // on our stack, ready to be operated on.
             compileTerm();
+
+            // At this point, we've handled two terms.
+            // Both of their results should be on the stack, so now
+            // we can go forward and perform the desired operation.
+            ArithmeticCommand cmd = ArithmeticCommand.fromBinarySymbol(operatorToken);
+            if(cmd == ArithmeticCommand.MULTIPLY || cmd == ArithmeticCommand.DIVIDE) {
+                // Both of these commands are implemented as part of the OS, rather
+                // than part of the base language. Thus, we'll just insert the
+                // function call here.
+                vmWriter.writeCall("Math." + cmd.toString().toLowerCase(), 2);
+            }
+            else {
+                vmWriter.writeArithmetic(cmd);
+            }
 
             symbolAfterToken = safeCast(tokenizer.peek(), SymbolToken.class);
         }
@@ -607,6 +532,7 @@ public class CompilationEngine {
 
         if(intLiteral != null) {
             writeXML(intLiteral);
+            vmWriter.writePush(Segment.CONSTANT, intLiteral.getValue());
         }
         else if(stringLiteral != null) {
             writeXML(stringLiteral);
@@ -691,38 +617,9 @@ public class CompilationEngine {
         indentLevel--;
         writeXML("</term>");
     }
+    // endregion
 
-    /**
-     * This continues to consume expressions until a ')' is found.
-     * (In every situation with an expression list, they are always bound
-     * by parenthesis so we're exploiting that assumption here.)
-     */
-    private void compileExpressionList() {
-
-        writeXML("<expressionList>");
-        indentLevel++;
-
-        SymbolToken symbol = safeCast(tokenizer.peek(), SymbolToken.class);
-        if(symbol == null || symbol.getValue() != ')') {
-            // We have at LEAST one expression, maybe more. After each expression,
-            // we can be sure that we will always have a symbol.
-            compileExpression();
-
-            // So now we either have a comma followed by another expression
-            // (and this can repeat many times), or a close parenthesis.
-            symbol = peekTokenOrDie(SymbolToken.class);
-            while(symbol.getValue() == ',') {
-                writeXML(tokenizer.next());    // Write the ','
-                compileExpression();
-
-                symbol = peekTokenOrDie(SymbolToken.class);
-            }
-        }
-
-        indentLevel--;
-        writeXML("</expressionList>");
-    }
-
+    // region Subroutine call compilation
     private void compileSubroutineCall(IdentifierToken subroutineName) {
         compileSubroutineCall(null, subroutineName);
     }
@@ -740,23 +637,207 @@ public class CompilationEngine {
      *
      * This consumes '(' and ')', in addition to the expressionList inside.
      *
-     * @param objName Name of the object. Can be null.
-     * @param subroutineName Name of the subroutine. SHOULD NOT BE NULL.
+     * @param objToken Name of the object. Can be null.
+     * @param subroutineToken Name of the subroutine. SHOULD NOT BE NULL.
      */
-    private void compileSubroutineCall(IdentifierToken objName, IdentifierToken subroutineName) {
+    private void compileSubroutineCall(IdentifierToken objToken, IdentifierToken subroutineToken) {
 
-        // region GEN Initial method call setup
+        // We need to push things onto the stack, and then we can do the
+        // call. However, we generate the XML first, so the order is a
+        // little iffy.
+        String subroutineName;
+
         // Note that, in our XML format, there is no "subroutineCall" block,
         // so we can just spew our code out.
-        if(objName != null) {
-            writeXML(objName.toXML(" (class)"));
-            writeXML(new SymbolToken(objName.getLineNumber(), "."));
+        if(objToken != null) {
+            // TODO The first term could very well be an object, not a class. CHECK FOR THIS
+            writeXML(objToken.toXML(" (class)"));
+            writeXML(new SymbolToken(objToken.getLineNumber(), "."));
+            writeXML(subroutineToken.toXML(" (subroutine)"));
+
+            subroutineName = objToken.getValue() + "." + subroutineToken.getValue();
         }
-        writeXML(subroutineName.toXML(" (subroutine)"));
+        else {
+            writeXML(subroutineToken.toXML(" (subroutine)"));
+
+            subroutineName = subroutineToken.getValue();
+        }
 
         writeXML(getSymbolOrDie('('));
-        compileExpressionList();
+        int argCount = compileExpressionList();
         writeXML(getSymbolOrDie(')'));
+
+        vmWriter.writeCall(subroutineName, argCount);
+    }
+
+    /**
+     * This continues to consume expressions until a ')' is found.
+     * (In every situation with an expression list, they are always bound
+     * by parenthesis so we're exploiting that assumption here.)
+     *
+     * @return Number of expressions in list.
+     */
+    private int compileExpressionList() {
+
+        int expressionCount = 0;
+
+        writeXML("<expressionList>");
+        indentLevel++;
+
+        SymbolToken symbol = safeCast(tokenizer.peek(), SymbolToken.class);
+        if(symbol == null || symbol.getValue() != ')') {
+            // We have at LEAST one expression, maybe more. After each expression,
+            // we can be sure that we will always have a symbol.
+            compileExpression();
+            expressionCount++;
+
+            // So now we either have a comma followed by another expression
+            // (and this can repeat many times), or a close parenthesis.
+            symbol = peekTokenOrDie(SymbolToken.class);
+            while(symbol.getValue() == ',') {
+                writeXML(tokenizer.next());    // Write the ','
+                compileExpression();
+                expressionCount++;
+
+                symbol = peekTokenOrDie(SymbolToken.class);
+            }
+        }
+
+        indentLevel--;
+        writeXML("</expressionList>");
+
+        return expressionCount;
+    }
+    // endregion
+
+    // region Variable and parameter declaration
+    // TODO Make all of this maybe do stuff?
+
+    private void compileClassVarDec() {
+        // Figure out the locality.
+        KeywordToken locality = getTokenOrDie(KeywordToken.class);
+        if(locality.getValue() != KeywordType.STATIC && locality.getValue() != KeywordType.FIELD) {
+            throw new IllegalSyntaxException(
+                    locality,
+                    "Class variable declarations must be 'static' or 'field'"
+            );
+        }
+
+        // Next, figure out the type.
+        Token varType = tokenizer.next();
+        String typeName = convertTokenToTypeName(varType, false);
+
+        // Get every single variable name.
+        List<IdentifierToken> names = parseVarDecList();
+
+        // Alright, we have everything we need now.
+        // region GEN Variable declaration code
+        writeXML("<classVarDec>");
+        indentLevel++;
+
+        writeXML(locality);
+        writeXML(varType);
+        //writeXML(names.get(0));
+        for(int i = 0; i < names.size(); i++) {
+            //writeXML(names.get(i));
+            Variable newVar = symbolTable.define(
+                    names.get(i),
+                    typeName,
+                    VariableKind.fromKeyword(locality.getValue())
+            );
+            writeXML(newVar.toXML("(def)"));
+
+            if(i < names.size()-1) {
+                writeXML(new SymbolToken(-1, ","));
+            }
+        }
+        writeXML(new SymbolToken(-1, ";"));
+
+        indentLevel--;
+        writeXML("</classVarDec>");
+        // endregion
+
+    }
+
+
+    /**
+     * This ends upon seeing ')' but it does not consume it. This also
+     * assumes that the opening '(' has already been consumed.
+     *
+     * Note that these are PARAMETERS, not ARGUMENTS. This gets used
+     * when defining methods/functions, not when calling them.
+     */
+    private void compileParameterList() {
+
+        writeXML("<parameterList>");
+        indentLevel++;
+
+        SymbolToken nextTokenSymbol = safeCast(tokenizer.peek(), SymbolToken.class);
+
+        // Loop until we see ')'
+        while(nextTokenSymbol == null || nextTokenSymbol.getValue() != ')') {
+
+            // There are two possible scenarios here:
+            //  1. paramType paramName,
+            //  2. paramType paramName)
+            //
+            // We want to consume commas and leave parenthesis.
+            Token paramType = tokenizer.next();
+            String paramTypeName = convertTokenToTypeName(paramType, false);
+            IdentifierToken paramName = getTokenOrDie(IdentifierToken.class);
+
+            writeXML(paramType);
+            //writeXML(paramName);
+            Variable newVar = symbolTable.define(paramName, paramTypeName, VariableKind.ARG);
+            writeXML(newVar.toXML("(def)"));
+
+            // Either way, the next token MUST be a symbol (either ',' or ')').
+            nextTokenSymbol = peekTokenOrDie(SymbolToken.class);
+            if(nextTokenSymbol.getValue() == ',') {
+                tokenizer.next();
+                writeXML(nextTokenSymbol);
+            }
+        }
+
+        indentLevel--;
+        writeXML("</parameterList>");
+    }
+
+    /**
+     * Takes any variable declarations, and continues until a ';' is encountered.
+     * This consumes the entire statement, including the ';' at the end.
+     */
+    private void compileVarDec() {
+
+        // Ensure we have the var keyword.
+        KeywordToken varKeyword = getKeywordOrDie(KeywordType.VAR);
+
+        // Next, figure out the type.
+        Token varType = tokenizer.next();
+        String typeName = convertTokenToTypeName(varType, false);
+
+        // Get every single variable name.
+        List<IdentifierToken> names = parseVarDecList();
+
+        // Alright, we have everything we need now.
+        // region GEN Variable declaration code
+        writeXML("<varDec>");
+        indentLevel++;
+
+        writeXML(varKeyword);
+        writeXML(varType);
+        for(int i = 0; i < names.size(); i++) {
+            Variable newVar = symbolTable.define(names.get(i).getValue(), typeName, VariableKind.VAR);
+            writeXML(newVar.toXML("(def)"));
+
+            if(i < names.size()-1) {
+                writeXML(new SymbolToken(-1, ","));
+            }
+        }
+        writeXML(new SymbolToken(-1, ";"));
+
+        indentLevel--;
+        writeXML("</varDec>");
         // endregion
     }
 
@@ -794,6 +875,7 @@ public class CompilationEngine {
 
         return names;
     }
+    // endregion
 
 
 }

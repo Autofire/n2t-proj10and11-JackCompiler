@@ -42,13 +42,17 @@ public class JackAnalyzer {
 
     public void analyze() throws IOException {
         for(File inputFile : inputFiles) {
-            File outputFile = new File(inputFile.getPath().replace(".jack", ".C.xml"));
+            File outputVMFile = new File(inputFile.getPath().replace(".jack", ".vm"));
+            File outputXMLFile = new File(inputFile.getPath().replace(".jack", ".C.xml"));
 
-            System.out.println("Opening " + inputFile);
-            System.out.println("Writing " + outputFile);
+            System.out.println("Reading jack from " + inputFile);
+            System.out.println("Writing VM to     " + outputVMFile);
+            System.out.println("Writing XML to    " + outputXMLFile);
+            System.out.println();
 
             try(BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-                PrintStream writer = new PrintStream(outputFile)) {
+                PrintStream xmlWriter = new PrintStream(outputXMLFile);
+                PrintStream vmWriter = new PrintStream(outputVMFile)) {
 
                 /*
                 JackTokenizer tokenizer = new JackTokenizer(reader);
@@ -60,7 +64,7 @@ public class JackAnalyzer {
                 writer.println("</tokens>");
                  */
 
-                CompilationEngine engine = new CompilationEngine(reader, writer);
+                CompilationEngine engine = new CompilationEngine(reader, vmWriter, xmlWriter);
                 engine.compile();
 
             }
