@@ -1,0 +1,519 @@
+<class>
+  <keyword> class </keyword>
+  <identifier> Main </identifier>
+  <symbol> { </symbol>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <keyword> void </keyword>
+    <identifier> main </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> int </keyword>
+        <identifier> value (type: int, kind: var, index: 0) (def) </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Memory (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> poke (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <integerConstant> 8000 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <integerConstant> 32 </integerConstant>
+              </term>
+              <symbol> + </symbol>
+              <term>
+                <integerConstant> 15 </integerConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Main (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> fillMemory (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <integerConstant> 8001 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <integerConstant> 16 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <symbol> - </symbol>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> value (type: int, kind: var, index: 0) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Memory (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> peek (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <integerConstant> 8000 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Main (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> convert (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> value (type: int, kind: var, index: 0) (ref) </identifier>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <keyword> void </keyword>
+    <identifier> convert </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+      <keyword> int </keyword>
+      <identifier> value (type: int, kind: arg, index: 0) (def) </identifier>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> int </keyword>
+        <identifier> mask (type: int, kind: var, index: 0) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> position (type: int, kind: var, index: 1) (def) </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> boolean </keyword>
+        <identifier> loop (type: boolean, kind: var, index: 2) (def) </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> loop (type: boolean, kind: var, index: 2) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <keyword> true </keyword>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <whileStatement>
+          <keyword> while </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> loop (type: boolean, kind: var, index: 2) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> position (type: int, kind: var, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> position (type: int, kind: var, index: 1) (ref) </identifier>
+                </term>
+                <symbol> + </symbol>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> mask (type: int, kind: var, index: 0) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> Main (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> nextMask (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                    <expression>
+                      <term>
+                        <identifier> mask (type: int, kind: var, index: 0) (ref) </identifier>
+                      </term>
+                    </expression>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <ifStatement>
+              <keyword> if </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <symbol> ~ </symbol>
+                  <term>
+                    <symbol> ( </symbol>
+                    <expression>
+                      <term>
+                        <identifier> position (type: int, kind: var, index: 1) (ref) </identifier>
+                      </term>
+                      <symbol> &gt; </symbol>
+                      <term>
+                        <integerConstant> 16 </integerConstant>
+                      </term>
+                    </expression>
+                    <symbol> ) </symbol>
+                  </term>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <ifStatement>
+                  <keyword> if </keyword>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ~ </symbol>
+                      <term>
+                        <symbol> ( </symbol>
+                        <expression>
+                          <term>
+                            <symbol> ( </symbol>
+                            <expression>
+                              <term>
+                                <identifier> value (type: int, kind: arg, index: 0) (ref) </identifier>
+                              </term>
+                              <symbol> &amp; </symbol>
+                              <term>
+                                <identifier> mask (type: int, kind: var, index: 0) (ref) </identifier>
+                              </term>
+                            </expression>
+                            <symbol> ) </symbol>
+                          </term>
+                          <symbol> = </symbol>
+                          <term>
+                            <integerConstant> 0 </integerConstant>
+                          </term>
+                        </expression>
+                        <symbol> ) </symbol>
+                      </term>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                  <symbol> { </symbol>
+                  <statements>
+                    <doStatement>
+                      <keyword> do </keyword>
+                      <identifier> Memory (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> poke (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                        <expression>
+                          <term>
+                            <integerConstant> 8000 </integerConstant>
+                          </term>
+                          <symbol> + </symbol>
+                          <term>
+                            <identifier> position (type: int, kind: var, index: 1) (ref) </identifier>
+                          </term>
+                        </expression>
+                        <symbol> , </symbol>
+                        <expression>
+                          <term>
+                            <integerConstant> 1 </integerConstant>
+                          </term>
+                        </expression>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                      <symbol> ; </symbol>
+                    </doStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                  <keyword> else </keyword>
+                  <symbol> { </symbol>
+                  <statements>
+                    <doStatement>
+                      <keyword> do </keyword>
+                      <identifier> Memory (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> poke (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                        <expression>
+                          <term>
+                            <integerConstant> 8000 </integerConstant>
+                          </term>
+                          <symbol> + </symbol>
+                          <term>
+                            <identifier> position (type: int, kind: var, index: 1) (ref) </identifier>
+                          </term>
+                        </expression>
+                        <symbol> , </symbol>
+                        <expression>
+                          <term>
+                            <integerConstant> 0 </integerConstant>
+                          </term>
+                        </expression>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                      <symbol> ; </symbol>
+                    </doStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                </ifStatement>
+              </statements>
+              <symbol> } </symbol>
+              <keyword> else </keyword>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> loop (type: boolean, kind: var, index: 2) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <keyword> false </keyword>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+              </statements>
+              <symbol> } </symbol>
+            </ifStatement>
+          </statements>
+          <symbol> } </symbol>
+        </whileStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <keyword> int </keyword>
+    <identifier> nextMask </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+      <keyword> int </keyword>
+      <identifier> mask (type: int, kind: arg, index: 0) (def) </identifier>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> mask (type: int, kind: arg, index: 0) (ref) </identifier>
+            </term>
+            <symbol> = </symbol>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <returnStatement>
+              <keyword> return </keyword>
+              <expression>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </returnStatement>
+          </statements>
+          <symbol> } </symbol>
+          <keyword> else </keyword>
+          <symbol> { </symbol>
+          <statements>
+            <returnStatement>
+              <keyword> return </keyword>
+              <expression>
+                <term>
+                  <identifier> mask (type: int, kind: arg, index: 0) (ref) </identifier>
+                </term>
+                <symbol> * </symbol>
+                <term>
+                  <integerConstant> 2 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </returnStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <keyword> void </keyword>
+    <identifier> fillMemory </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+      <keyword> int </keyword>
+      <identifier> startAddress (type: int, kind: arg, index: 0) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> length (type: int, kind: arg, index: 1) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> value (type: int, kind: arg, index: 2) (def) </identifier>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <whileStatement>
+          <keyword> while </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> length (type: int, kind: arg, index: 1) (ref) </identifier>
+            </term>
+            <symbol> &gt; </symbol>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <doStatement>
+              <keyword> do </keyword>
+              <identifier> Memory (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> poke (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <identifier> startAddress (type: int, kind: arg, index: 0) (ref) </identifier>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <identifier> value (type: int, kind: arg, index: 2) (ref) </identifier>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+              <symbol> ; </symbol>
+            </doStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> length (type: int, kind: arg, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> length (type: int, kind: arg, index: 1) (ref) </identifier>
+                </term>
+                <symbol> - </symbol>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> startAddress (type: int, kind: arg, index: 0) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> startAddress (type: int, kind: arg, index: 0) (ref) </identifier>
+                </term>
+                <symbol> + </symbol>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+        </whileStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <symbol> } </symbol>
+</class>

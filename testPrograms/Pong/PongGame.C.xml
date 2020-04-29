@@ -1,0 +1,1280 @@
+<class>
+  <keyword> class </keyword>
+  <identifier> PongGame </identifier>
+  <symbol> { </symbol>
+  <classVarDec>
+    <keyword> static </keyword>
+    <identifier> PongGame </identifier>
+    <identifier> instance (type: PongGame, kind: static, index: 0) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <identifier> Bat </identifier>
+    <identifier> bat (type: Bat, kind: field, index: 0) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <identifier> Ball </identifier>
+    <identifier> ball (type: Ball, kind: field, index: 1) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> wall (type: int, kind: field, index: 2) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> boolean </keyword>
+    <identifier> exit (type: boolean, kind: field, index: 3) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> score (type: int, kind: field, index: 4) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> lastWall (type: int, kind: field, index: 5) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> batWidth (type: int, kind: field, index: 6) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <subroutineDec>
+    <keyword> constructor </keyword>
+    <identifier> PongGame </identifier>
+    <identifier> new </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Screen (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> clearScreen (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> batWidth (type: int, kind: field, index: 6) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 50 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> bat (type: Bat, kind: field, index: 0) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Bat (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> new (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <integerConstant> 230 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 229 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <identifier> batWidth (type: int, kind: field, index: 6) (ref) </identifier>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 7 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> ball (type: Ball, kind: field, index: 1) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Ball (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> new (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <integerConstant> 253 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 222 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 0 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 511 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 0 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 229 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> ball (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> setDestination (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <integerConstant> 400 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <integerConstant> 0 </integerConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Screen (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> drawRectangle (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <integerConstant> 0 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <integerConstant> 238 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <integerConstant> 511 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <integerConstant> 240 </integerConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> moveCursor (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <integerConstant> 22 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <integerConstant> 0 </integerConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printString (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <stringConstant> Score: 0 </stringConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> exit (type: boolean, kind: field, index: 3) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <keyword> false </keyword>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> score (type: int, kind: field, index: 4) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> wall (type: int, kind: field, index: 2) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> lastWall (type: int, kind: field, index: 5) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <keyword> this </keyword>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> dispose </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> bat (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> dispose (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> ball (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> dispose (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Memory (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> deAlloc (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <keyword> this </keyword>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <keyword> void </keyword>
+    <identifier> newInstance </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> instance (type: PongGame, kind: static, index: 0) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> PongGame (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> new (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <identifier> PongGame </identifier>
+    <identifier> getInstance </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <identifier> instance (type: PongGame, kind: static, index: 0) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> run </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> char </keyword>
+        <identifier> key (type: char, kind: var, index: 0) (def) </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <statements>
+        <whileStatement>
+          <keyword> while </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <symbol> ~ </symbol>
+              <term>
+                <identifier> exit (type: boolean, kind: field, index: 3) (ref) </identifier>
+              </term>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <whileStatement>
+              <keyword> while </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> key (type: char, kind: var, index: 0) (ref) </identifier>
+                    </term>
+                    <symbol> = </symbol>
+                    <term>
+                      <integerConstant> 0 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+                <symbol> &amp; </symbol>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ~ </symbol>
+                      <term>
+                        <identifier> exit (type: boolean, kind: field, index: 3) (ref) </identifier>
+                      </term>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> key (type: char, kind: var, index: 0) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <identifier> Keyboard (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> keyPressed (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+                <doStatement>
+                  <keyword> do </keyword>
+                  <identifier> bat (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> move (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                  <symbol> ; </symbol>
+                </doStatement>
+                <doStatement>
+                  <keyword> do </keyword>
+                  <identifier> moveBall (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                  <symbol> ; </symbol>
+                </doStatement>
+                <doStatement>
+                  <keyword> do </keyword>
+                  <identifier> Sys (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> wait (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                    <expression>
+                      <term>
+                        <integerConstant> 50 </integerConstant>
+                      </term>
+                    </expression>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                  <symbol> ; </symbol>
+                </doStatement>
+              </statements>
+              <symbol> } </symbol>
+            </whileStatement>
+            <ifStatement>
+              <keyword> if </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> key (type: char, kind: var, index: 0) (ref) </identifier>
+                </term>
+                <symbol> = </symbol>
+                <term>
+                  <integerConstant> 130 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <doStatement>
+                  <keyword> do </keyword>
+                  <identifier> bat (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> setDirection (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                    <expression>
+                      <term>
+                        <integerConstant> 1 </integerConstant>
+                      </term>
+                    </expression>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                  <symbol> ; </symbol>
+                </doStatement>
+              </statements>
+              <symbol> } </symbol>
+              <keyword> else </keyword>
+              <symbol> { </symbol>
+              <statements>
+                <ifStatement>
+                  <keyword> if </keyword>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> key (type: char, kind: var, index: 0) (ref) </identifier>
+                    </term>
+                    <symbol> = </symbol>
+                    <term>
+                      <integerConstant> 132 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                  <symbol> { </symbol>
+                  <statements>
+                    <doStatement>
+                      <keyword> do </keyword>
+                      <identifier> bat (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> setDirection (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                        <expression>
+                          <term>
+                            <integerConstant> 2 </integerConstant>
+                          </term>
+                        </expression>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                      <symbol> ; </symbol>
+                    </doStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                  <keyword> else </keyword>
+                  <symbol> { </symbol>
+                  <statements>
+                    <ifStatement>
+                      <keyword> if </keyword>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> key (type: char, kind: var, index: 0) (ref) </identifier>
+                        </term>
+                        <symbol> = </symbol>
+                        <term>
+                          <integerConstant> 140 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                      <symbol> { </symbol>
+                      <statements>
+                        <letStatement>
+                          <keyword> let </keyword>
+                          <identifier> exit (type: boolean, kind: field, index: 3) (ref) </identifier>
+                          <symbol> = </symbol>
+                          <expression>
+                            <term>
+                              <keyword> true </keyword>
+                            </term>
+                          </expression>
+                          <symbol> ; </symbol>
+                        </letStatement>
+                      </statements>
+                      <symbol> } </symbol>
+                    </ifStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                </ifStatement>
+              </statements>
+              <symbol> } </symbol>
+            </ifStatement>
+            <whileStatement>
+              <keyword> while </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ~ </symbol>
+                      <term>
+                        <symbol> ( </symbol>
+                        <expression>
+                          <term>
+                            <identifier> key (type: char, kind: var, index: 0) (ref) </identifier>
+                          </term>
+                          <symbol> = </symbol>
+                          <term>
+                            <integerConstant> 0 </integerConstant>
+                          </term>
+                        </expression>
+                        <symbol> ) </symbol>
+                      </term>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+                <symbol> &amp; </symbol>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ~ </symbol>
+                      <term>
+                        <identifier> exit (type: boolean, kind: field, index: 3) (ref) </identifier>
+                      </term>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> key (type: char, kind: var, index: 0) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <identifier> Keyboard (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> keyPressed (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+                <doStatement>
+                  <keyword> do </keyword>
+                  <identifier> bat (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> move (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                  <symbol> ; </symbol>
+                </doStatement>
+                <doStatement>
+                  <keyword> do </keyword>
+                  <identifier> moveBall (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                  <symbol> ; </symbol>
+                </doStatement>
+                <doStatement>
+                  <keyword> do </keyword>
+                  <identifier> Sys (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> wait (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                    <expression>
+                      <term>
+                        <integerConstant> 50 </integerConstant>
+                      </term>
+                    </expression>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                  <symbol> ; </symbol>
+                </doStatement>
+              </statements>
+              <symbol> } </symbol>
+            </whileStatement>
+          </statements>
+          <symbol> } </symbol>
+        </whileStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> exit (type: boolean, kind: field, index: 3) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <doStatement>
+              <keyword> do </keyword>
+              <identifier> Output (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> moveCursor (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <integerConstant> 10 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 27 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+              <symbol> ; </symbol>
+            </doStatement>
+            <doStatement>
+              <keyword> do </keyword>
+              <identifier> Output (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> printString (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <stringConstant> Game Over </stringConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+              <symbol> ; </symbol>
+            </doStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> moveBall </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> int </keyword>
+        <identifier> bouncingDirection (type: int, kind: var, index: 0) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> batLeft (type: int, kind: var, index: 1) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> batRight (type: int, kind: var, index: 2) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> ballLeft (type: int, kind: var, index: 3) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> ballRight (type: int, kind: var, index: 4) (def) </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> wall (type: int, kind: field, index: 2) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> ball (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> move (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> wall (type: int, kind: field, index: 2) (ref) </identifier>
+                </term>
+                <symbol> &gt; </symbol>
+                <term>
+                  <integerConstant> 0 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+            </term>
+            <symbol> &amp; </symbol>
+            <term>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <symbol> ~ </symbol>
+                  <term>
+                    <symbol> ( </symbol>
+                    <expression>
+                      <term>
+                        <identifier> wall (type: int, kind: field, index: 2) (ref) </identifier>
+                      </term>
+                      <symbol> = </symbol>
+                      <term>
+                        <identifier> lastWall (type: int, kind: field, index: 5) (ref) </identifier>
+                      </term>
+                    </expression>
+                    <symbol> ) </symbol>
+                  </term>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> lastWall (type: int, kind: field, index: 5) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> wall (type: int, kind: field, index: 2) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> bouncingDirection (type: int, kind: var, index: 0) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 0 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> batLeft (type: int, kind: var, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> bat (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> getLeft (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> batRight (type: int, kind: var, index: 2) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> bat (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> getRight (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> ballLeft (type: int, kind: var, index: 3) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> ball (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> getLeft (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> ballRight (type: int, kind: var, index: 4) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> ball (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> getRight (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <ifStatement>
+              <keyword> if </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> wall (type: int, kind: field, index: 2) (ref) </identifier>
+                </term>
+                <symbol> = </symbol>
+                <term>
+                  <integerConstant> 4 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> exit (type: boolean, kind: field, index: 3) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> batLeft (type: int, kind: var, index: 1) (ref) </identifier>
+                        </term>
+                        <symbol> &gt; </symbol>
+                        <term>
+                          <identifier> ballRight (type: int, kind: var, index: 4) (ref) </identifier>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                    <symbol> | </symbol>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> batRight (type: int, kind: var, index: 2) (ref) </identifier>
+                        </term>
+                        <symbol> &lt; </symbol>
+                        <term>
+                          <identifier> ballLeft (type: int, kind: var, index: 3) (ref) </identifier>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+                <ifStatement>
+                  <keyword> if </keyword>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ~ </symbol>
+                      <term>
+                        <identifier> exit (type: boolean, kind: field, index: 3) (ref) </identifier>
+                      </term>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                  <symbol> { </symbol>
+                  <statements>
+                    <ifStatement>
+                      <keyword> if </keyword>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> ballRight (type: int, kind: var, index: 4) (ref) </identifier>
+                        </term>
+                        <symbol> &lt; </symbol>
+                        <term>
+                          <symbol> ( </symbol>
+                          <expression>
+                            <term>
+                              <identifier> batLeft (type: int, kind: var, index: 1) (ref) </identifier>
+                            </term>
+                            <symbol> + </symbol>
+                            <term>
+                              <integerConstant> 10 </integerConstant>
+                            </term>
+                          </expression>
+                          <symbol> ) </symbol>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                      <symbol> { </symbol>
+                      <statements>
+                        <letStatement>
+                          <keyword> let </keyword>
+                          <identifier> bouncingDirection (type: int, kind: var, index: 0) (ref) </identifier>
+                          <symbol> = </symbol>
+                          <expression>
+                            <term>
+                              <symbol> - </symbol>
+                              <term>
+                                <integerConstant> 1 </integerConstant>
+                              </term>
+                            </term>
+                          </expression>
+                          <symbol> ; </symbol>
+                        </letStatement>
+                      </statements>
+                      <symbol> } </symbol>
+                      <keyword> else </keyword>
+                      <symbol> { </symbol>
+                      <statements>
+                        <ifStatement>
+                          <keyword> if </keyword>
+                          <symbol> ( </symbol>
+                          <expression>
+                            <term>
+                              <identifier> ballLeft (type: int, kind: var, index: 3) (ref) </identifier>
+                            </term>
+                            <symbol> &gt; </symbol>
+                            <term>
+                              <symbol> ( </symbol>
+                              <expression>
+                                <term>
+                                  <identifier> batRight (type: int, kind: var, index: 2) (ref) </identifier>
+                                </term>
+                                <symbol> - </symbol>
+                                <term>
+                                  <integerConstant> 10 </integerConstant>
+                                </term>
+                              </expression>
+                              <symbol> ) </symbol>
+                            </term>
+                          </expression>
+                          <symbol> ) </symbol>
+                          <symbol> { </symbol>
+                          <statements>
+                            <letStatement>
+                              <keyword> let </keyword>
+                              <identifier> bouncingDirection (type: int, kind: var, index: 0) (ref) </identifier>
+                              <symbol> = </symbol>
+                              <expression>
+                                <term>
+                                  <integerConstant> 1 </integerConstant>
+                                </term>
+                              </expression>
+                              <symbol> ; </symbol>
+                            </letStatement>
+                          </statements>
+                          <symbol> } </symbol>
+                        </ifStatement>
+                      </statements>
+                      <symbol> } </symbol>
+                    </ifStatement>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> batWidth (type: int, kind: field, index: 6) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <identifier> batWidth (type: int, kind: field, index: 6) (ref) </identifier>
+                        </term>
+                        <symbol> - </symbol>
+                        <term>
+                          <integerConstant> 2 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                    <doStatement>
+                      <keyword> do </keyword>
+                      <identifier> bat (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> setWidth (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                        <expression>
+                          <term>
+                            <identifier> batWidth (type: int, kind: field, index: 6) (ref) </identifier>
+                          </term>
+                        </expression>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                      <symbol> ; </symbol>
+                    </doStatement>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> score (type: int, kind: field, index: 4) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <identifier> score (type: int, kind: field, index: 4) (ref) </identifier>
+                        </term>
+                        <symbol> + </symbol>
+                        <term>
+                          <integerConstant> 1 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                    <doStatement>
+                      <keyword> do </keyword>
+                      <identifier> Output (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> moveCursor (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                        <expression>
+                          <term>
+                            <integerConstant> 22 </integerConstant>
+                          </term>
+                        </expression>
+                        <symbol> , </symbol>
+                        <expression>
+                          <term>
+                            <integerConstant> 7 </integerConstant>
+                          </term>
+                        </expression>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                      <symbol> ; </symbol>
+                    </doStatement>
+                    <doStatement>
+                      <keyword> do </keyword>
+                      <identifier> Output (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> printInt (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                        <expression>
+                          <term>
+                            <identifier> score (type: int, kind: field, index: 4) (ref) </identifier>
+                          </term>
+                        </expression>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                      <symbol> ; </symbol>
+                    </doStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                </ifStatement>
+              </statements>
+              <symbol> } </symbol>
+            </ifStatement>
+            <doStatement>
+              <keyword> do </keyword>
+              <identifier> ball (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> bounce (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <identifier> bouncingDirection (type: int, kind: var, index: 0) (ref) </identifier>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+              <symbol> ; </symbol>
+            </doStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <symbol> } </symbol>
+</class>

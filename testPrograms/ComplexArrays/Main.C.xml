@@ -1,0 +1,862 @@
+<class>
+  <keyword> class </keyword>
+  <identifier> Main </identifier>
+  <symbol> { </symbol>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <keyword> void </keyword>
+    <identifier> main </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+        <keyword> var </keyword>
+        <identifier> Array </identifier>
+        <identifier> a (type: Array, kind: var, index: 0) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> b (type: Array, kind: var, index: 1) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> c (type: Array, kind: var, index: 2) (def) </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Array (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> new (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <integerConstant> 10 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Array (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> new (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <integerConstant> 5 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Array (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> new (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <integerConstant> 1 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+          <symbol> [ </symbol>
+          <expression>
+            <term>
+              <integerConstant> 3 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ] </symbol>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 2 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+          <symbol> [ </symbol>
+          <expression>
+            <term>
+              <integerConstant> 4 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ] </symbol>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 8 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+          <symbol> [ </symbol>
+          <expression>
+            <term>
+              <integerConstant> 5 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ] </symbol>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 4 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+          <symbol> [ </symbol>
+          <expression>
+            <term>
+              <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 3 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+            </term>
+          </expression>
+          <symbol> ] </symbol>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 3 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <integerConstant> 3 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+          <symbol> [ </symbol>
+          <expression>
+            <term>
+              <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+                  <symbol> [ </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 3 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ] </symbol>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+            </term>
+          </expression>
+          <symbol> ] </symbol>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+                  <symbol> [ </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 5 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ] </symbol>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+            </term>
+            <symbol> * </symbol>
+            <term>
+              <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <integerConstant> 7 </integerConstant>
+                        </term>
+                        <symbol> - </symbol>
+                        <term>
+                          <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+                          <symbol> [ </symbol>
+                          <expression>
+                            <term>
+                              <integerConstant> 3 </integerConstant>
+                            </term>
+                          </expression>
+                          <symbol> ] </symbol>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                    <symbol> - </symbol>
+                    <term>
+                      <identifier> Main (class) </identifier>
+                      <symbol> . </symbol>
+                      <identifier> double (subroutine) </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                        <expression>
+                          <term>
+                            <integerConstant> 2 </integerConstant>
+                          </term>
+                        </expression>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+                <symbol> + </symbol>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+          <symbol> [ </symbol>
+          <expression>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ] </symbol>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <keyword> null </keyword>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 0 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printString (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <stringConstant> Test 1: expected result: 5; actual result:  </stringConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printInt (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+                <symbol> [ </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 2 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> ] </symbol>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> println (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printString (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <stringConstant> Test 2: expected result: 40; actual result:  </stringConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printInt (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+                <symbol> [ </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 5 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> ] </symbol>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> println (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printString (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <stringConstant> Test 3: expected result: 0; actual result:  </stringConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printInt (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> println (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <keyword> null </keyword>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+            </term>
+            <symbol> = </symbol>
+            <term>
+              <keyword> null </keyword>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <doStatement>
+              <keyword> do </keyword>
+              <identifier> Main (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> fill (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 10 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+              <symbol> ; </symbol>
+            </doStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+                  <symbol> [ </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 3 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ] </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 33 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+                  <symbol> [ </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 7 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ] </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 77 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> a (type: Array, kind: var, index: 0) (ref) </identifier>
+                  <symbol> [ </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 3 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ] </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+                  <symbol> [ </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 1 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ] </symbol>
+                </term>
+                <symbol> + </symbol>
+                <term>
+                  <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+                  <symbol> [ </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 1 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ] </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printString (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <stringConstant> Test 4: expected result: 77; actual result:  </stringConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printInt (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> c (type: Array, kind: var, index: 2) (ref) </identifier>
+                <symbol> [ </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 1 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> ] </symbol>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> println (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printString (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <stringConstant> Test 5: expected result: 110; actual result:  </stringConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> printInt (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> b (type: Array, kind: var, index: 1) (ref) </identifier>
+                <symbol> [ </symbol>
+                <expression>
+                  <term>
+                    <integerConstant> 1 </integerConstant>
+                  </term>
+                </expression>
+                <symbol> ] </symbol>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> println (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <keyword> int </keyword>
+    <identifier> double </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+      <keyword> int </keyword>
+      <identifier> a (type: int, kind: arg, index: 0) (def) </identifier>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <identifier> a (type: int, kind: arg, index: 0) (ref) </identifier>
+            </term>
+            <symbol> * </symbol>
+            <term>
+              <integerConstant> 2 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> function </keyword>
+    <keyword> void </keyword>
+    <identifier> fill </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+      <identifier> Array </identifier>
+      <identifier> a (type: Array, kind: arg, index: 0) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> size (type: int, kind: arg, index: 1) (def) </identifier>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <whileStatement>
+          <keyword> while </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> size (type: int, kind: arg, index: 1) (ref) </identifier>
+            </term>
+            <symbol> &gt; </symbol>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> size (type: int, kind: arg, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> size (type: int, kind: arg, index: 1) (ref) </identifier>
+                </term>
+                <symbol> - </symbol>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> a (type: Array, kind: arg, index: 0) (ref) </identifier>
+              <symbol> [ </symbol>
+              <expression>
+                <term>
+                  <identifier> size (type: int, kind: arg, index: 1) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ] </symbol>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> Array (class) </identifier>
+                  <symbol> . </symbol>
+                  <identifier> new (subroutine) </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                    <expression>
+                      <term>
+                        <integerConstant> 3 </integerConstant>
+                      </term>
+                    </expression>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+        </whileStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <symbol> } </symbol>
+</class>

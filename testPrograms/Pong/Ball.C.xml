@@ -1,0 +1,1859 @@
+<class>
+  <keyword> class </keyword>
+  <identifier> Ball </identifier>
+  <symbol> { </symbol>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> x (type: int, kind: field, index: 0) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> y (type: int, kind: field, index: 1) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> lengthx (type: int, kind: field, index: 2) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> lengthy (type: int, kind: field, index: 3) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> d (type: int, kind: field, index: 4) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> straightD (type: int, kind: field, index: 5) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> diagonalD (type: int, kind: field, index: 6) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> boolean </keyword>
+    <identifier> invert (type: boolean, kind: field, index: 7) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> positivex (type: boolean, kind: field, index: 8) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> positivey (type: boolean, kind: field, index: 9) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> leftWall (type: int, kind: field, index: 10) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> rightWall (type: int, kind: field, index: 11) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> topWall (type: int, kind: field, index: 12) (def) </identifier>
+    <symbol> , </symbol>
+    <identifier> bottomWall (type: int, kind: field, index: 13) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> wall (type: int, kind: field, index: 14) (def) </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <subroutineDec>
+    <keyword> constructor </keyword>
+    <identifier> Ball </identifier>
+    <identifier> new </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+      <keyword> int </keyword>
+      <identifier> Ax (type: int, kind: arg, index: 0) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> Ay (type: int, kind: arg, index: 1) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> AleftWall (type: int, kind: arg, index: 2) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> ArightWall (type: int, kind: arg, index: 3) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> AtopWall (type: int, kind: arg, index: 4) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> AbottomWall (type: int, kind: arg, index: 5) (def) </identifier>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Ax (type: int, kind: arg, index: 0) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Ay (type: int, kind: arg, index: 1) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> leftWall (type: int, kind: field, index: 10) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> AleftWall (type: int, kind: arg, index: 2) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> rightWall (type: int, kind: field, index: 11) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> ArightWall (type: int, kind: arg, index: 3) (ref) </identifier>
+            </term>
+            <symbol> - </symbol>
+            <term>
+              <integerConstant> 6 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> topWall (type: int, kind: field, index: 12) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> AtopWall (type: int, kind: arg, index: 4) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> bottomWall (type: int, kind: field, index: 13) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> AbottomWall (type: int, kind: arg, index: 5) (ref) </identifier>
+            </term>
+            <symbol> - </symbol>
+            <term>
+              <integerConstant> 6 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> show (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <keyword> this </keyword>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> dispose </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Memory (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> deAlloc (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <keyword> this </keyword>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> show </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Screen (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> setColor (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <keyword> true </keyword>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> draw (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> hide </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Screen (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> setColor (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <keyword> false </keyword>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> draw (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> draw </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Screen (class) </identifier>
+          <symbol> . </symbol>
+          <identifier> drawRectangle (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+              </term>
+              <symbol> + </symbol>
+              <term>
+                <integerConstant> 5 </integerConstant>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+              </term>
+              <symbol> + </symbol>
+              <term>
+                <integerConstant> 5 </integerConstant>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> int </keyword>
+    <identifier> getLeft </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> int </keyword>
+    <identifier> getRight </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <integerConstant> 5 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> setDestination </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+      <keyword> int </keyword>
+      <identifier> destx (type: int, kind: arg, index: 1) (def) </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> desty (type: int, kind: arg, index: 2) (def) </identifier>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> int </keyword>
+        <identifier> dx (type: int, kind: var, index: 0) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> dy (type: int, kind: var, index: 1) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> temp (type: int, kind: var, index: 2) (def) </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> lengthx (type: int, kind: field, index: 2) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> destx (type: int, kind: arg, index: 1) (ref) </identifier>
+            </term>
+            <symbol> - </symbol>
+            <term>
+              <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> lengthy (type: int, kind: field, index: 3) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> desty (type: int, kind: arg, index: 2) (ref) </identifier>
+            </term>
+            <symbol> - </symbol>
+            <term>
+              <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> dx (type: int, kind: var, index: 0) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Math (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> abs (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <identifier> lengthx (type: int, kind: field, index: 2) (ref) </identifier>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> dy (type: int, kind: var, index: 1) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Math (class) </identifier>
+              <symbol> . </symbol>
+              <identifier> abs (subroutine) </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <identifier> lengthy (type: int, kind: field, index: 3) (ref) </identifier>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> invert (type: boolean, kind: field, index: 7) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> dx (type: int, kind: var, index: 0) (ref) </identifier>
+                </term>
+                <symbol> &lt; </symbol>
+                <term>
+                  <identifier> dy (type: int, kind: var, index: 1) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> invert (type: boolean, kind: field, index: 7) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> temp (type: int, kind: var, index: 2) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> dx (type: int, kind: var, index: 0) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> dx (type: int, kind: var, index: 0) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> dy (type: int, kind: var, index: 1) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> dy (type: int, kind: var, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> temp (type: int, kind: var, index: 2) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> positivex (type: boolean, kind: field, index: 8) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                    </term>
+                    <symbol> &lt; </symbol>
+                    <term>
+                      <identifier> desty (type: int, kind: arg, index: 2) (ref) </identifier>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> positivey (type: boolean, kind: field, index: 9) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                    </term>
+                    <symbol> &lt; </symbol>
+                    <term>
+                      <identifier> destx (type: int, kind: arg, index: 1) (ref) </identifier>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+          <keyword> else </keyword>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> positivex (type: boolean, kind: field, index: 8) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                    </term>
+                    <symbol> &lt; </symbol>
+                    <term>
+                      <identifier> destx (type: int, kind: arg, index: 1) (ref) </identifier>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> positivey (type: boolean, kind: field, index: 9) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                    </term>
+                    <symbol> &lt; </symbol>
+                    <term>
+                      <identifier> desty (type: int, kind: arg, index: 2) (ref) </identifier>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> d (type: int, kind: field, index: 4) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 2 </integerConstant>
+                </term>
+                <symbol> * </symbol>
+                <term>
+                  <identifier> dy (type: int, kind: var, index: 1) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+            </term>
+            <symbol> - </symbol>
+            <term>
+              <identifier> dx (type: int, kind: var, index: 0) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> straightD (type: int, kind: field, index: 5) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 2 </integerConstant>
+            </term>
+            <symbol> * </symbol>
+            <term>
+              <identifier> dy (type: int, kind: var, index: 1) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> diagonalD (type: int, kind: field, index: 6) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 2 </integerConstant>
+            </term>
+            <symbol> * </symbol>
+            <term>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> dy (type: int, kind: var, index: 1) (ref) </identifier>
+                </term>
+                <symbol> - </symbol>
+                <term>
+                  <identifier> dx (type: int, kind: var, index: 0) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> int </keyword>
+    <identifier> move </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> hide (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> d (type: int, kind: field, index: 4) (ref) </identifier>
+            </term>
+            <symbol> &lt; </symbol>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> d (type: int, kind: field, index: 4) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> d (type: int, kind: field, index: 4) (ref) </identifier>
+                </term>
+                <symbol> + </symbol>
+                <term>
+                  <identifier> straightD (type: int, kind: field, index: 5) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+          <keyword> else </keyword>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> d (type: int, kind: field, index: 4) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> d (type: int, kind: field, index: 4) (ref) </identifier>
+                </term>
+                <symbol> + </symbol>
+                <term>
+                  <identifier> diagonalD (type: int, kind: field, index: 6) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <ifStatement>
+              <keyword> if </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> positivey (type: boolean, kind: field, index: 9) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <ifStatement>
+                  <keyword> if </keyword>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> invert (type: boolean, kind: field, index: 7) (ref) </identifier>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                  <symbol> { </symbol>
+                  <statements>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                        </term>
+                        <symbol> + </symbol>
+                        <term>
+                          <integerConstant> 4 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                  <keyword> else </keyword>
+                  <symbol> { </symbol>
+                  <statements>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                        </term>
+                        <symbol> + </symbol>
+                        <term>
+                          <integerConstant> 4 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                </ifStatement>
+              </statements>
+              <symbol> } </symbol>
+              <keyword> else </keyword>
+              <symbol> { </symbol>
+              <statements>
+                <ifStatement>
+                  <keyword> if </keyword>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> invert (type: boolean, kind: field, index: 7) (ref) </identifier>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                  <symbol> { </symbol>
+                  <statements>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                        </term>
+                        <symbol> - </symbol>
+                        <term>
+                          <integerConstant> 4 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                  <keyword> else </keyword>
+                  <symbol> { </symbol>
+                  <statements>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                        </term>
+                        <symbol> - </symbol>
+                        <term>
+                          <integerConstant> 4 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                </ifStatement>
+              </statements>
+              <symbol> } </symbol>
+            </ifStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> positivex (type: boolean, kind: field, index: 8) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <ifStatement>
+              <keyword> if </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> invert (type: boolean, kind: field, index: 7) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                    </term>
+                    <symbol> + </symbol>
+                    <term>
+                      <integerConstant> 4 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+              </statements>
+              <symbol> } </symbol>
+              <keyword> else </keyword>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                    </term>
+                    <symbol> + </symbol>
+                    <term>
+                      <integerConstant> 4 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+              </statements>
+              <symbol> } </symbol>
+            </ifStatement>
+          </statements>
+          <symbol> } </symbol>
+          <keyword> else </keyword>
+          <symbol> { </symbol>
+          <statements>
+            <ifStatement>
+              <keyword> if </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> invert (type: boolean, kind: field, index: 7) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                    </term>
+                    <symbol> - </symbol>
+                    <term>
+                      <integerConstant> 4 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+              </statements>
+              <symbol> } </symbol>
+              <keyword> else </keyword>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                    </term>
+                    <symbol> - </symbol>
+                    <term>
+                      <integerConstant> 4 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+              </statements>
+              <symbol> } </symbol>
+            </ifStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <symbol> ~ </symbol>
+              <term>
+                <symbol> ( </symbol>
+                <expression>
+                  <term>
+                    <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                  </term>
+                  <symbol> &gt; </symbol>
+                  <term>
+                    <identifier> leftWall (type: int, kind: field, index: 10) (ref) </identifier>
+                  </term>
+                </expression>
+                <symbol> ) </symbol>
+              </term>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 1 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> leftWall (type: int, kind: field, index: 10) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <symbol> ~ </symbol>
+              <term>
+                <symbol> ( </symbol>
+                <expression>
+                  <term>
+                    <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                  </term>
+                  <symbol> &lt; </symbol>
+                  <term>
+                    <identifier> rightWall (type: int, kind: field, index: 11) (ref) </identifier>
+                  </term>
+                </expression>
+                <symbol> ) </symbol>
+              </term>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 2 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> rightWall (type: int, kind: field, index: 11) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <symbol> ~ </symbol>
+              <term>
+                <symbol> ( </symbol>
+                <expression>
+                  <term>
+                    <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                  </term>
+                  <symbol> &gt; </symbol>
+                  <term>
+                    <identifier> topWall (type: int, kind: field, index: 12) (ref) </identifier>
+                  </term>
+                </expression>
+                <symbol> ) </symbol>
+              </term>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 3 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> topWall (type: int, kind: field, index: 12) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <symbol> ~ </symbol>
+              <term>
+                <symbol> ( </symbol>
+                <expression>
+                  <term>
+                    <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                  </term>
+                  <symbol> &lt; </symbol>
+                  <term>
+                    <identifier> bottomWall (type: int, kind: field, index: 13) (ref) </identifier>
+                  </term>
+                </expression>
+                <symbol> ) </symbol>
+              </term>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 4 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> bottomWall (type: int, kind: field, index: 13) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> show (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> bounce </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+      <keyword> int </keyword>
+      <identifier> bouncingDirection (type: int, kind: arg, index: 1) (def) </identifier>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <varDec>
+        <keyword> var </keyword>
+        <keyword> int </keyword>
+        <identifier> newx (type: int, kind: var, index: 0) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> newy (type: int, kind: var, index: 1) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> divLengthx (type: int, kind: var, index: 2) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> divLengthy (type: int, kind: var, index: 3) (def) </identifier>
+        <symbol> , </symbol>
+        <identifier> factor (type: int, kind: var, index: 4) (def) </identifier>
+        <symbol> ; </symbol>
+      </varDec>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> divLengthx (type: int, kind: var, index: 2) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> lengthx (type: int, kind: field, index: 2) (ref) </identifier>
+            </term>
+            <symbol> / </symbol>
+            <term>
+              <integerConstant> 10 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> divLengthy (type: int, kind: var, index: 3) (ref) </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> lengthy (type: int, kind: field, index: 3) (ref) </identifier>
+            </term>
+            <symbol> / </symbol>
+            <term>
+              <integerConstant> 10 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> bouncingDirection (type: int, kind: arg, index: 1) (ref) </identifier>
+            </term>
+            <symbol> = </symbol>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> factor (type: int, kind: var, index: 4) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 10 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+          <keyword> else </keyword>
+          <symbol> { </symbol>
+          <statements>
+            <ifStatement>
+              <keyword> if </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <symbol> ~ </symbol>
+                          <term>
+                            <symbol> ( </symbol>
+                            <expression>
+                              <term>
+                                <identifier> lengthx (type: int, kind: field, index: 2) (ref) </identifier>
+                              </term>
+                              <symbol> &lt; </symbol>
+                              <term>
+                                <integerConstant> 0 </integerConstant>
+                              </term>
+                            </expression>
+                            <symbol> ) </symbol>
+                          </term>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                    <symbol> &amp; </symbol>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> bouncingDirection (type: int, kind: arg, index: 1) (ref) </identifier>
+                        </term>
+                        <symbol> = </symbol>
+                        <term>
+                          <integerConstant> 1 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+                <symbol> | </symbol>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> lengthx (type: int, kind: field, index: 2) (ref) </identifier>
+                        </term>
+                        <symbol> &lt; </symbol>
+                        <term>
+                          <integerConstant> 0 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                    <symbol> &amp; </symbol>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> bouncingDirection (type: int, kind: arg, index: 1) (ref) </identifier>
+                        </term>
+                        <symbol> = </symbol>
+                        <term>
+                          <symbol> ( </symbol>
+                          <expression>
+                            <term>
+                              <symbol> - </symbol>
+                              <term>
+                                <integerConstant> 1 </integerConstant>
+                              </term>
+                            </term>
+                          </expression>
+                          <symbol> ) </symbol>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> factor (type: int, kind: var, index: 4) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 20 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+              </statements>
+              <symbol> } </symbol>
+              <keyword> else </keyword>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> factor (type: int, kind: var, index: 4) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 5 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+              </statements>
+              <symbol> } </symbol>
+            </ifStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+            </term>
+            <symbol> = </symbol>
+            <term>
+              <integerConstant> 1 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 506 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> divLengthy (type: int, kind: var, index: 3) (ref) </identifier>
+                    </term>
+                    <symbol> * </symbol>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <symbol> - </symbol>
+                          <term>
+                            <integerConstant> 50 </integerConstant>
+                          </term>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+                <symbol> / </symbol>
+                <term>
+                  <identifier> divLengthx (type: int, kind: var, index: 2) (ref) </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                </term>
+                <symbol> + </symbol>
+                <term>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+                    </term>
+                    <symbol> * </symbol>
+                    <term>
+                      <identifier> factor (type: int, kind: var, index: 4) (ref) </identifier>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+            </letStatement>
+          </statements>
+          <symbol> } </symbol>
+          <keyword> else </keyword>
+          <symbol> { </symbol>
+          <statements>
+            <ifStatement>
+              <keyword> if </keyword>
+              <symbol> ( </symbol>
+              <expression>
+                <term>
+                  <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+                </term>
+                <symbol> = </symbol>
+                <term>
+                  <integerConstant> 2 </integerConstant>
+                </term>
+              </expression>
+              <symbol> ) </symbol>
+              <symbol> { </symbol>
+              <statements>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 0 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> divLengthy (type: int, kind: var, index: 3) (ref) </identifier>
+                        </term>
+                        <symbol> * </symbol>
+                        <term>
+                          <integerConstant> 50 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                    <symbol> / </symbol>
+                    <term>
+                      <identifier> divLengthx (type: int, kind: var, index: 2) (ref) </identifier>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+                <letStatement>
+                  <keyword> let </keyword>
+                  <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+                  <symbol> = </symbol>
+                  <expression>
+                    <term>
+                      <identifier> y (type: int, kind: field, index: 1) (ref) </identifier>
+                    </term>
+                    <symbol> + </symbol>
+                    <term>
+                      <symbol> ( </symbol>
+                      <expression>
+                        <term>
+                          <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+                        </term>
+                        <symbol> * </symbol>
+                        <term>
+                          <identifier> factor (type: int, kind: var, index: 4) (ref) </identifier>
+                        </term>
+                      </expression>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
+                  <symbol> ; </symbol>
+                </letStatement>
+              </statements>
+              <symbol> } </symbol>
+              <keyword> else </keyword>
+              <symbol> { </symbol>
+              <statements>
+                <ifStatement>
+                  <keyword> if </keyword>
+                  <symbol> ( </symbol>
+                  <expression>
+                    <term>
+                      <identifier> wall (type: int, kind: field, index: 14) (ref) </identifier>
+                    </term>
+                    <symbol> = </symbol>
+                    <term>
+                      <integerConstant> 3 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ) </symbol>
+                  <symbol> { </symbol>
+                  <statements>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <integerConstant> 250 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <symbol> ( </symbol>
+                          <expression>
+                            <term>
+                              <identifier> divLengthx (type: int, kind: var, index: 2) (ref) </identifier>
+                            </term>
+                            <symbol> * </symbol>
+                            <term>
+                              <symbol> ( </symbol>
+                              <expression>
+                                <term>
+                                  <symbol> - </symbol>
+                                  <term>
+                                    <integerConstant> 25 </integerConstant>
+                                  </term>
+                                </term>
+                              </expression>
+                              <symbol> ) </symbol>
+                            </term>
+                          </expression>
+                          <symbol> ) </symbol>
+                        </term>
+                        <symbol> / </symbol>
+                        <term>
+                          <identifier> divLengthy (type: int, kind: var, index: 3) (ref) </identifier>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                        </term>
+                        <symbol> + </symbol>
+                        <term>
+                          <symbol> ( </symbol>
+                          <expression>
+                            <term>
+                              <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+                            </term>
+                            <symbol> * </symbol>
+                            <term>
+                              <identifier> factor (type: int, kind: var, index: 4) (ref) </identifier>
+                            </term>
+                          </expression>
+                          <symbol> ) </symbol>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                  <keyword> else </keyword>
+                  <symbol> { </symbol>
+                  <statements>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <integerConstant> 0 </integerConstant>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <symbol> ( </symbol>
+                          <expression>
+                            <term>
+                              <identifier> divLengthx (type: int, kind: var, index: 2) (ref) </identifier>
+                            </term>
+                            <symbol> * </symbol>
+                            <term>
+                              <integerConstant> 25 </integerConstant>
+                            </term>
+                          </expression>
+                          <symbol> ) </symbol>
+                        </term>
+                        <symbol> / </symbol>
+                        <term>
+                          <identifier> divLengthy (type: int, kind: var, index: 3) (ref) </identifier>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                    <letStatement>
+                      <keyword> let </keyword>
+                      <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+                      <symbol> = </symbol>
+                      <expression>
+                        <term>
+                          <identifier> x (type: int, kind: field, index: 0) (ref) </identifier>
+                        </term>
+                        <symbol> + </symbol>
+                        <term>
+                          <symbol> ( </symbol>
+                          <expression>
+                            <term>
+                              <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+                            </term>
+                            <symbol> * </symbol>
+                            <term>
+                              <identifier> factor (type: int, kind: var, index: 4) (ref) </identifier>
+                            </term>
+                          </expression>
+                          <symbol> ) </symbol>
+                        </term>
+                      </expression>
+                      <symbol> ; </symbol>
+                    </letStatement>
+                  </statements>
+                  <symbol> } </symbol>
+                </ifStatement>
+              </statements>
+              <symbol> } </symbol>
+            </ifStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> setDestination (subroutine) </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> newx (type: int, kind: var, index: 0) (ref) </identifier>
+              </term>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
+              <term>
+                <identifier> newy (type: int, kind: var, index: 1) (ref) </identifier>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <symbol> } </symbol>
+</class>
